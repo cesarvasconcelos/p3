@@ -32,10 +32,16 @@ Outras fontes de leitura serão indicadas pelo professor.
 
 As documentações oficiais:
 
-- [Spring Framework](https://spring.io/)
+- [Spring Website](https://spring.io/)
+- [Spring Projects](https://spring.io/projects)
 - [Spring Framework Javadoc API](https://docs.spring.io/spring-framework/docs/current/javadoc-api/)
 - [HTML Reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference)
 - [CSS Reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference)
+
+Outros links:
+
+- [Spring initializr](https://start.spring.io/) para gerar projetos
+- [Thymeleaf](https://www.thymeleaf.org/)
 
 ## Suporte ferramental básico
 
