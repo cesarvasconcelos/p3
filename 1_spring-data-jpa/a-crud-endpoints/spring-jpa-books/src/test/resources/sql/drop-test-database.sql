@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS tbl_user;
+DROP TABLE IF EXISTS tbl_role;
+DROP TABLE IF EXISTS tbl_book;
