@@ -23,6 +23,7 @@
 </dependency>
 ```
 
+## Database changes:
 - Aside from previous `tbl_book` table, now create the **User** (`tbl_user`) and **Role** (`tbl_role`)
   tables and insert some sample data:
     - Quick Tip: you can use the https://dbfiddle.uk/ to easily run and see a preview of the changes
@@ -94,6 +95,7 @@ VALUES ('The Secrets of the Universe', 19.99),
 ```
 - Now run the application and see that all endpoints are by default **protected**.
 
+## Creating the custom `login.html`
 - We need to create our custom `login.html` HTML form inside `<root-project-folder>/src/main/resources/templates/login.html` folder:
 
 ```html
@@ -146,11 +148,10 @@ public String login()
 {
     return "login"; // Return the custom login page
 }
-
 ```
+## Spring Security Configurations (to unlock some endpoints)
 - Create a package `config` and implement the `SecurityConfig.java` with the following code:
 ```java
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -206,9 +207,12 @@ public class PasswordEncoderConfig {
     }
 }
 ```
+
+## Model Classes `User` and `Role`
 - Inside the `model` package, create the `Role` and `User` classes:
 
 ```java
+// Role class
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -249,7 +253,7 @@ public class Role {
 ```
 
 ```java
-
+// User class
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -312,10 +316,10 @@ public class User {
 }
 ```
 
+## Authentication using database credentials
 - Create the `MyUserNamePwdAuthenticationProvider` class inside the `config` package:
 
 ```java
-
 import com.example.books.model.Role;
 import com.example.books.model.User;
 import com.example.books.repository.UserRepository;
@@ -388,6 +392,8 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
 
 ```
 
+## Spring Repositories for User and Role classes
+
 - Inside the package `repository`, create the Spring repository interfaces:
 
 ```java
@@ -413,10 +419,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 }
 ```
 
+## Changing `books.html` page
+
 - Now, modify the `books.html` page to include security configuration:
 
 ```html
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
@@ -484,5 +491,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
         </div>
     </body>
 </html>
-
 ```
+
+- That's it! Just compile everything and run the application.
