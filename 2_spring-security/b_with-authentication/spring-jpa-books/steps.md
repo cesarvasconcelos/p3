@@ -23,7 +23,9 @@
 </dependency>
 ```
 
-- Aside from 'Book' table, now create the 'User' and 'Role' tables and insert some sample data:
+- Aside from previous `tbl_book` table, now create the **User** (`tbl_user`) and **Role** (`tbl_role`)
+  tables and insert some sample data:
+    - Quick Tip: you can use the https://dbfiddle.uk/ to easily run and see a preview of the changes
 
 ```sql
 -- ------------------------------------------------
@@ -67,14 +69,13 @@ ALTER TABLE tbl_user
 insert tbl_role (role) values ('admin');
 insert tbl_role (role) values ('student');
 
--- admin password is: 54321
+-- admin's password is: 54321
 insert tbl_user (user_name, user_password, user_fk_role)
        values ('admin', '$2a$12$gfTMWrXUwBU.eVPVYbz9C.dPg9kFfRCfL8oYa1TOZg63QCD8nKi1C', 1 );
 
--- ana password is: 12345
+-- ana's password is: 12345
 insert tbl_user (user_name, user_password, user_fk_role)
        values ('ana', '$2a$12$Q6gFWzwrEUUiaF4kD1M3tOqvuV1N1txnf9hxZtkAk8jLb3U5Gjv.O', 2 );
-
 
 -- ------------------------------------------------
 -- Insert sample book data
@@ -90,11 +91,65 @@ VALUES ('The Secrets of the Universe', 19.99),
        ('Building Scalable APIs', 40.00),
        ('Java Persistence in Action', 22.50),
        ('Microservices with Spring', 38.95);
+```
+- Now run the application and see that all endpoints are by default **protected**.
+
+- We need to create our custom `login.html` HTML form inside `<root-project-folder>/src/main/resources/templates/login.html` folder:
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    </head>
+
+    <body>
+        <div class="container m-4 w-50">
+            <h2>Login</h2>
+
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+
+            <div th:if="${param.error}" class="alert alert-danger mt-3">
+                Invalid username or password.
+            </div>
+
+            <div th:if="${param.logout}" class="alert alert-success mt-3">
+                You have been logged out successfully.
+            </div>
+        </div>
+    </body>
+
+</html>
+```
+
+- Modify the `BookController.java` to include the endpoint to show the login page:
+
+```java
+// New endpoint to show the login.html
+@GetMapping( "/login" )
+public String login()
+{
+    return "login"; // Return the custom login page
+}
 
 ```
 - Create a package `config` and implement the `SecurityConfig.java` with the following code:
 ```java
-package com.example.books.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -356,17 +411,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query( "SELECT u FROM User u JOIN FETCH u.role WHERE u.name = :name" )
     Optional<User> findUserWithRoleByName( @Param( "name" ) String name );
 }
-```
-- Modify the `BookController.java` to include the endpoint to show the login page:
-
-```java
-// New endpoint to show the login.html
-@GetMapping( "/login" )
-public String login()
-{
-    return "login"; // Return the custom login page
-}
-
 ```
 
 - Now, modify the `books.html` page to include security configuration:
