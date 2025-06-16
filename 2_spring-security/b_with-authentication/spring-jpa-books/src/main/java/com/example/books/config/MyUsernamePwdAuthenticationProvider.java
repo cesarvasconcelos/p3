@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+/* The interface which we need to implement to define the logic on how a user should be
+authenticated inside Spring Security framework is AuthenticationProvider */
 @Component
 public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
