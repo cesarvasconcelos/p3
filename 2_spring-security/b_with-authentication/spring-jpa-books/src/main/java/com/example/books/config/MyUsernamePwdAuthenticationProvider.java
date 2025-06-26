@@ -29,6 +29,7 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // The authenticate(Authentication authentication) method represents all the logic for authentication.
     @Override
     public Authentication authenticate( Authentication authentication ) throws AuthenticationException
     {
@@ -36,10 +37,13 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
         String htmlFormPassword = authentication.getCredentials()
                                                 .toString();
 
+        // buscar user pelo htmlFormUser no database
         User fetchedUser = userRepository.findUserWithRoleByName( htmlFormUser )
                                          .orElse( null );
 
+        /* This condition generally calls UserDetailsService and PasswordEncoder to test the username and password. */
         if ( ( fetchedUser != null ) &&
+             // ( fetchedUser.getName().equalsIgnoreCase( htmlFormUser ) ) && não precisa pois já buscou no database o htmlFormUser
              ( fetchedUser.getId() > 0 ) &&
              // em vez de: password.equals( person.getPassword() ) ), usa-se senha encriptada
              passwordEncoder.matches( htmlFormPassword, fetchedUser.getPassword() ) ) // agora com BcryptEncoder
@@ -69,9 +73,11 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
     }
 
     @Override
-    public boolean supports( Class<?> authentication )
+    public boolean supports( Class<?> authenticationType )
     {
         // type of the Authentication implementation here
-        return authentication.equals( UsernamePasswordAuthenticationToken.class );
+        return UsernamePasswordAuthenticationToken.class
+                    .isAssignableFrom( authenticationType );
+        // return authenticationType.equals( UsernamePasswordAuthenticationToken.class );
     }
 }
