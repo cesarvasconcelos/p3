@@ -4,6 +4,7 @@ import com.example.books.model.Role;
 import com.example.books.model.User;
 import com.example.books.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,11 +50,13 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
                 // quem está autenticado. nesse exemplo, o controller /dashboard endpoint
                 // irá exibir o nome. mas se eu quisesse poderia ter autenticado pelo e-mail
                 // e passar o e-mail para ser exibido como o login autenticado
+                //fetchedUser.getName(), fetchedUser.getPassword(), getGrantedAuthorities( fetchedUser.getRole() )
                 fetchedUser.getName(), null, getGrantedAuthorities( fetchedUser.getRole() )
             );
         } else
         {
-            throw new BadCredentialsException( "Invalid credentials!" );
+            throw new AuthenticationCredentialsNotFoundException( "Invalid credentials!" );
+            // throw new BadCredentialsException( "Invalid credentials!" );
         }
     }
 
@@ -68,6 +71,7 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
     @Override
     public boolean supports( Class<?> authentication )
     {
+        // type of the Authentication implementation here
         return authentication.equals( UsernamePasswordAuthenticationToken.class );
     }
 }
