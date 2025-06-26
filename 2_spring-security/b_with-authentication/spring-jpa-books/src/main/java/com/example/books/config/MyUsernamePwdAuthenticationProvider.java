@@ -34,8 +34,8 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
     public Authentication authenticate( Authentication authentication ) throws AuthenticationException
     {
         String htmlFormUser = authentication.getName();
-        String htmlFormPassword = authentication.getCredentials()
-                                                .toString();
+        String htmlFormPassword = String.valueOf( authentication.getCredentials() );
+
 
         // buscar user pelo htmlFormUser no database
         User fetchedUser = userRepository.findUserWithRoleByName( htmlFormUser )
