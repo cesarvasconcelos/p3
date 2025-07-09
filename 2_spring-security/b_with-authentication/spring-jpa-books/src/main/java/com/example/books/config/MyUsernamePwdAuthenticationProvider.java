@@ -6,7 +6,6 @@ import com.example.books.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -37,24 +36,32 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
         String htmlFormPassword = String.valueOf( authentication.getCredentials() );
 
 
-        // buscar user pelo htmlFormUser no database
+        // Busca o usuário no banco de dados com base no nome informado no formulário HTML
         User fetchedUser = userRepository.findUserWithRoleByName( htmlFormUser )
                                          .orElse( null );
 
-        /* This condition generally calls UserDetailsService and PasswordEncoder to test the username and password. */
+        /*
+        * Essa verificação substitui a chamada padrão ao UserDetailsService e PasswordEncoder.
+        * Aqui, comparamos o usuário buscado e validamos sua senha de forma segura.
+        * This condition generally calls UserDetailsService and PasswordEncoder to test the username and password.
+        */
         if ( ( fetchedUser != null ) &&
-             // ( fetchedUser.getName().equalsIgnoreCase( htmlFormUser ) ) && não precisa pois já buscou no database o htmlFormUser
              ( fetchedUser.getId() > 0 ) &&
-             // em vez de: password.equals( person.getPassword() ) ), usa-se senha encriptada
-             passwordEncoder.matches( htmlFormPassword, fetchedUser.getPassword() ) ) // agora com BcryptEncoder
+             // Em vez de comparar diretamente com fetchedUser.getPassword().equals(htmlFormPassword), usamos o PasswordEncoder
+             passwordEncoder.matches( htmlFormPassword, fetchedUser.getPassword() ) ) // usando BcryptEncoder
         {
             return new UsernamePasswordAuthenticationToken(
-                // o que for passado como primeiro parametro (no caso getName())
-                // é o que será usado pelo spring security para fins de mostrar
-                // quem está autenticado. nesse exemplo, o controller /dashboard endpoint
-                // irá exibir o nome. mas se eu quisesse poderia ter autenticado pelo e-mail
-                // e passar o e-mail para ser exibido como o login autenticado
-                //fetchedUser.getName(), fetchedUser.getPassword(), getGrantedAuthorities( fetchedUser.getRole() )
+                /*
+                * O primeiro parâmetro (fetchedUser.getName()) será usado pelo Spring Security
+                * como o "nome de usuário autenticado". Por exemplo, no endpoint /dashboard,
+                * o nome exibido será esse.
+                *
+                * Se preferíssemos autenticar pelo e-mail, bastaria ajustar a lógica de autenticação
+                * e retornar fetchedUser.getEmail() aqui.
+                *
+                * Como o segundo parâmetro (credentials) não é mais necessário após a autenticação,
+                * passamos null.
+                */
                 fetchedUser.getName(), null, getGrantedAuthorities( fetchedUser.getRole() )
             );
         } else
