@@ -60,7 +60,6 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
         } else
         {
             throw new AuthenticationCredentialsNotFoundException( "Invalid credentials!" );
-            // throw new BadCredentialsException( "Invalid credentials!" );
         }
     }
 
@@ -83,9 +82,9 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
     @Override
     public boolean supports( Class<?> authenticationType )
     {
-        // type of the Authentication implementation here
+        // From Spring Security in Action 2nd edition:
+        // "type of the Authentication implementation here"
         return UsernamePasswordAuthenticationToken.class
                     .isAssignableFrom( authenticationType );
-        // return authenticationType.equals( UsernamePasswordAuthenticationToken.class );
     }
 }
