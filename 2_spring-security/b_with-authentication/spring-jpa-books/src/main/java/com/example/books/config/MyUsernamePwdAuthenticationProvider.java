@@ -66,9 +66,17 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
 
     private List<GrantedAuthority> getGrantedAuthorities( Role role )
     {
+        // From Spring Security in Action 2nd edition:
+        // "GrantedAuthority: It represents a privilege granted to the user. A user must have at
+        // least one authority. To create an authority, you only need to find a name for that
+        // privilege. Another possibility is to use the SimpleGrantedAuthority class to create
+        // authority instances. The SimpleGrantedAuthority class offers a way to create immutable
+        // instances of the type GrantedAuthority. Spring Security uses authorities to refer either
+        // to fine-grained privileges or to roles, which are groups of privileges."
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add( new SimpleGrantedAuthority( "ROLE_" + role.getRole()
-                                                                          .toUpperCase() ) );
+        grantedAuthorities.add(
+            new SimpleGrantedAuthority( "ROLE_" + role.getRole().toUpperCase() )
+        );
         return grantedAuthorities;
     }
 
