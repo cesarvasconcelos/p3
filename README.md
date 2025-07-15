@@ -14,8 +14,11 @@ programação.
 ## Objetivos de aprendizado
 
 - Como projetar e implementar aplicações Web coorporativas usando framework Spring
-- Implementar o front end e back end de uma aplicação Web típica
-- Spring ecossistema: Spring Web MVC, Spring Integration, Spring Testing, Spring Boot, Spring Data/JPA, Spring Security and Spring AOP
+- Implementar o front-end e back-end de uma aplicação Web típica
+- Operações CRUD, submissão de formulários HTML, validação e integração com banco de dados
+- Spring ecossistema: Spring Web MVC, Spring Integration, Spring Testing, Spring Boot, Spring
+  Data/JPA, Spring Security and Spring AOP
+- No Spring Security, como realizar autenticação com login, gerência de sessões e autorização baseada em privilégios
 - Discutir boas práticas no projeto de aplicações orientadas a microserviços
 - Construir REST APIs e Aplicações Web com Spring MVC, Thymeleaf, Bootstrap CSS
 - Persistência em banco de dados usando Spring Data JDBC/JPA, MySQL/MariaDB, Flyway
