@@ -98,6 +98,7 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
     {
         // From Spring Security in Action 2nd edition:
         // "type/style of the Authentication implementation here"
+        // em outras palavras, o tipo de autenticação que nosso AuthenticationProvider suportará
         return UsernamePasswordAuthenticationToken.class
                     .isAssignableFrom( authenticationType );
     }
