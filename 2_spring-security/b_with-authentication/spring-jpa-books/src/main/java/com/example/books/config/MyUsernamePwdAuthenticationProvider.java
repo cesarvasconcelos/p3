@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /* The interface which we need to implement to define the logic on how a user should be
-authenticated inside Spring Security framework is AuthenticationProvider */
+ * authenticated inside Spring Security framework is AuthenticationProvider
+ */
 @Component
 public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
@@ -28,7 +29,7 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // The authenticate(Authentication authentication) method represents all the logic for authentication.
+    /* The authenticate(Authentication authentication) method represents all the logic for authentication. */
     @Override
     public Authentication authenticate( Authentication authentication ) throws AuthenticationException
     {
@@ -36,11 +37,11 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
         String htmlFormPassword = String.valueOf( authentication.getCredentials() );
 
 
-        // Busca o usuário no banco de dados com base no nome informado no formulário HTML
+        /* Busca o usuário no banco de dados com base no nome informado no formulário HTML */
         User fetchedUser = userRepository.findUserWithRoleByName( htmlFormUser )
                                          .orElse( null );
 
-        /*
+       /*
         * Essa verificação substitui a chamada padrão ao UserDetailsService e PasswordEncoder.
         * Aqui, comparamos o usuário buscado e validamos sua senha de forma segura.
         * This condition generally calls UserDetailsService and PasswordEncoder to test the username and password.
@@ -51,7 +52,7 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
              passwordEncoder.matches( htmlFormPassword, fetchedUser.getPassword() ) ) // usando BcryptEncoder
         {
             return new UsernamePasswordAuthenticationToken(
-                /*
+               /*
                 * O primeiro parâmetro (fetchedUser.getName()) será usado pelo Spring Security
                 * como o "nome de usuário autenticado". Por exemplo, no endpoint /dashboard,
                 * o nome exibido será esse.
@@ -72,13 +73,14 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
 
     private List<GrantedAuthority> getGrantedAuthorities( Role role )
     {
-        // From Spring Security in Action 2nd edition:
-        // "GrantedAuthority: It represents a privilege granted to the user. A user must have at
-        // least one authority. To create an authority, you only need to find a name for that
-        // privilege. Another possibility is to use the SimpleGrantedAuthority class to create
-        // authority instances. The SimpleGrantedAuthority class offers a way to create immutable
-        // instances of the type GrantedAuthority. Spring Security uses authorities to refer either
-        // to fine-grained privileges or to roles, which are groups of privileges."
+        /* From Spring Security in Action 2nd edition:
+         * "GrantedAuthority: It represents a privilege granted to the user. A user must have at
+         * least one authority. To create an authority, you only need to find a name for that
+         * privilege. Another possibility is to use the SimpleGrantedAuthority class to create
+         * authority instances. The SimpleGrantedAuthority class offers a way to create immutable
+         * instances of the type GrantedAuthority. Spring Security uses authorities to refer either
+         * to fine-grained privileges or to roles, which are groups of privileges."
+         */
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         grantedAuthorities.add(
             new SimpleGrantedAuthority( "ROLE_" + role.getRole().toUpperCase() )
@@ -86,11 +88,16 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
         return grantedAuthorities;
     }
 
+   /*  Informa ao Spring Security que o nosso AuthenticationProvider suporta (como DaoAuthenticationProvider)
+    *  autenticações do tipo UsernamePasswordAuthenticationToken.
+    *  O ProviderManager usa este método para decidir qual AuthenticationProvider usar
+    *  com base no tipo do objeto Authentication recebido.
+    */
     @Override
     public boolean supports( Class<?> authenticationType )
     {
         // From Spring Security in Action 2nd edition:
-        // "type of the Authentication implementation here"
+        // "type/style of the Authentication implementation here"
         return UsernamePasswordAuthenticationToken.class
                     .isAssignableFrom( authenticationType );
     }
