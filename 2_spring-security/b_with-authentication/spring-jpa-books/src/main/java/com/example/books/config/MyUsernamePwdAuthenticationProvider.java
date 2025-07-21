@@ -51,6 +51,9 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
              // Em vez de comparar diretamente com fetchedUser.getPassword().equals(htmlFormPassword), usamos o PasswordEncoder
              passwordEncoder.matches( htmlFormPassword, fetchedUser.getPassword() ) ) // usando BcryptEncoder
         {
+            // From Spring Security in Action 2nd edition:
+            // This class is an implementation of the Authentication interface and represents a
+            // standard authentication request with username and password
             return new UsernamePasswordAuthenticationToken(
                /*
                 * O primeiro parâmetro (fetchedUser.getName()) será usado pelo Spring Security
@@ -98,6 +101,11 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
     {
         // From Spring Security in Action 2nd edition:
         // "type/style of the Authentication implementation here"
+        // Then we must decide what kind of Authentication interface
+        // implementation this AuthenticationProvider supports.
+        // Implement the supports (Class<?> authentication) method to specify which type of
+        // authentication is supported by the AuthenticationProvider that we define.
+        // That depends on what type we expect to be provided as a parameter to the authenticate()method
         // em outras palavras, o tipo de autenticação que nosso AuthenticationProvider suportará
         return UsernamePasswordAuthenticationToken.class
                     .isAssignableFrom( authenticationType );
