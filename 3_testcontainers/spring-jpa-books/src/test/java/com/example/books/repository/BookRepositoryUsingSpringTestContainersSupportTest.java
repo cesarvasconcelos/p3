@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     as classes de testes podem apenas fazer @Import(TestConfiguration.class) para
     se beneficiar imediatamente do container integrado ao Junit <--- é o caso deste exemplo
  */
-@DisplayName("Test class for repositories using TestContainers and sliced @DataJpaTest")
+@DisplayName("Test class for BookRepository CRUD Operations with Testcontainers and sliced @DataJpaTest")
 @DataJpaTest // Enables Spring Data JPA testing (rolls back transactions after each test)
 @Import({TestcontainersConfiguration.class})
 @ActiveProfiles("test") // Activate the "test" profile, $mvn clean test -Dspring.profiles.active=test
