@@ -61,11 +61,18 @@ public class BookControllerIntegrationTest {
                 .andExpect(redirectedUrl("/books"));
 
         // Then the Book is added to DB
-        assertThat(bookRepository.count()).isEqualTo(1);
+        assertThat(bookRepository.count())
+            .as("Expected exactly one book to be saved, but found a different count.")
+            .isEqualTo(1);
 
         Book book = bookRepository.findAll().getFirst();
-        assertThat(book.getTitle()).isEqualTo("The Hobbit");
-        assertThat(book.getPrice().doubleValue()).isEqualTo(39.99D);
+        assertThat(book.getTitle())
+            .as("Expected the saved book to have title 'The Hobbit', but it did not.")
+            .isEqualTo("The Hobbit");
+
+        assertThat(book.getPrice().doubleValue())
+            .as("Expected the saved book to have price $39.99, but it did not.")
+            .isEqualTo(39.99D);
     }
 
     @Test
@@ -86,7 +93,9 @@ public class BookControllerIntegrationTest {
                 .andExpect(redirectedUrl("/books"));
 
         // Then Book is removed from the DB
-        assertThat(bookRepository.findById(book.getId())).isEmpty();
+        assertThat(bookRepository.findById(book.getId()))
+            .as("Book should have been deleted from database but was not.")
+            .isEmpty();
     }
 
 }
