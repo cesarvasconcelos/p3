@@ -85,14 +85,7 @@ public class BookController {
             return "edit_book";
         }
 
-        // Ensure we only update title and price, not the ID
-        Optional<Book> existingBook = bookService.findById( id );
-        if (existingBook.isPresent()) {
-            Book updatedBook = existingBook.get();
-            updatedBook.setTitle(book.getTitle());
-            updatedBook.setPrice(book.getPrice());
-            bookService.save( updatedBook );
-        }
+        bookService.updateBook(id, book);  // Delegates to dirty-checking logic
 
         return "redirect:/books"; // Redirect after updating
     }
