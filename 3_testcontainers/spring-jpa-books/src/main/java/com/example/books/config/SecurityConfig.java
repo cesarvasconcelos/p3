@@ -24,11 +24,12 @@ public class SecurityConfig {
             .formLogin(login -> login
                 .loginPage("/login") // Custom login page
                 .defaultSuccessUrl("/books", true) // Redirect after login (Setting a default success URL for the login form))
+                .failureUrl( "/login?error" ) // Redirect after login failed (default behaviour of wrong username/password)
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher( "/logout", "POST") ) // Logout via POST
-                .logoutSuccessUrl("/login?logout") // Redirect after logout
+                .logoutSuccessUrl("/login?logout") // Redirect after logout success (default behaviour of Logout success)
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
