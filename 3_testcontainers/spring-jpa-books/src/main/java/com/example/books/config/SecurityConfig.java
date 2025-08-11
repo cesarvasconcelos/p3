@@ -6,7 +6,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity // Enables web security and tells Spring to use this class for security configuration. Spring looks for a SecurityFilterChain bean defined in the configuration class
@@ -28,7 +27,7 @@ public class SecurityConfig {
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher( "/logout", "POST") ) // Logout via POST
+                .logoutUrl("/logout")  // Define the URL that triggers logout
                 .logoutSuccessUrl("/login?logout") // Redirect after logout success (default behaviour of Logout success)
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
