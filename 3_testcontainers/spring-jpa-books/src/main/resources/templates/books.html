@@ -13,7 +13,13 @@
         <div class="container mt-4">
             <h2 class="mb-4">Books List</h2>
 
-            <!-- roles displayed without brackets, and bold font -->
+            <!-- Login button visible to all users -->
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}" class="btn btn-success mb-3">Login</a>
+            </div>
+
+            <!-- Visible Only to Authenticated Users -->
+            <!-- Roles are displayed without brackets, and bold font -->
             <div sec:authorize="isAuthenticated()">
                 <p>Welcome, <span sec:authentication="name"></span>!</p>
                 <p>Your roles:
@@ -24,10 +30,12 @@
                 </p>
             </div>
 
-            <a href="/books/add" class="btn btn-primary mb-3">Add New Book</a>
+            <!-- Visible Only to Admins Users -->
+            <a sec:authorize="hasRole('ROLE_ADMIN')"
+               th:href="@{/books/add}" class="btn btn-primary mb-3">Add New Book</a>
 
             <!-- Visible Only to Authenticated Users -->
-            <div sec:authorize="isAuthenticated()"  style="display:inline;">
+            <div sec:authorize="isAuthenticated()" style="display:inline;">
                 <form th:action="@{/logout}" method="post" style="display:inline;">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <button type="submit" class="btn btn-success mb-3">Logout</button>
@@ -40,7 +48,7 @@
                         <th>ID</th>
                         <th>Title</th>
                         <th>Price $</th>
-                        <th sec:authorize="isAuthenticated()">Actions</th>
+                        <th sec:authorize="isAuthenticated() and !hasRole('ROLE_USER')">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,20 +56,20 @@
                         <td th:text="${book.id}"></td>
                         <td th:text="${book.title}"></td>
                         <td th:text="${book.price}"></td>
-                        <td>
+                        <td sec:authorize="isAuthenticated()">
                             <!-- Edit Button (Only for Admins) -->
-                            <a sec:authorize="hasRole('ADMIN')"
-                               th:href="@{/books/edit/{id}(id=${book.id})}"
+                            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/books/edit/{id}(id=${book.id})}"
                                class="btn btn-warning btn-sm">Edit</a>
                             <!-- Delete Button (Only for Admins) -->
-                            <a sec:authorize="hasRole('ADMIN')"
-                               th:href="@{/books/delete/{id}(id=${book.id})}"
+                            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/books/delete/{id}(id=${book.id})}"
                                class="btn btn-danger btn-sm"
                                onclick="return confirm('Are you sure you want to delete this book?');">Delete</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
+            <a href="/" class="btn btn-dark">Home</a>
         </div>
     </body>
+
 </html>
