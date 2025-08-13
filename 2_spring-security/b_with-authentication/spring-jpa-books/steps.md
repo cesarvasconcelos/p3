@@ -26,7 +26,6 @@
 ## Database changes:
 - Aside from previous `tbl_book` table, now create the **User** (`tbl_user`) and **Role** (`tbl_role`)
   tables and insert some sample data:
-    - Quick Tip: you can use the https://dbfiddle.uk/ to easily run and see a preview of the changes
 
 ```sql
 -- ------------------------------------------------
@@ -65,10 +64,10 @@ ALTER TABLE tbl_user
         FOREIGN KEY (user_fk_role) REFERENCES tbl_role (role_id);
 
 -- ------------------------------------------------
--- Insert users and roles
+-- Insert users and roles (Updated role names)
 -- ------------------------------------------------
-insert tbl_role (role) values ('admin');
-insert tbl_role (role) values ('student');
+insert tbl_role (role) values ('ROLE_ADMIN');
+insert tbl_role (role) values ('ROLE_USER');
 
 -- admin's password is: 54321
 insert tbl_user (user_name, user_password, user_fk_role)
@@ -124,6 +123,7 @@ VALUES ('The Secrets of the Universe', 19.99),
                 </div>
 
                 <button type="submit" class="btn btn-primary">Login</button>
+                <a href="/books" class="btn btn-danger">Cancel</a>
             </form>
 
             <div th:if="${param.error}" class="alert alert-danger mt-3">
@@ -203,7 +203,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class PasswordEncoderConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // handle encrypted passwords
+        return new BCryptPasswordEncoder(); // handle hashing passwords
     }
 }
 ```
@@ -317,15 +317,17 @@ public class User {
 ```
 
 ## Authentication using database credentials
-- Create the `MyUserNamePwdAuthenticationProvider` class inside the `config` package:
+- Create the `MyUsernamePwdAuthenticationProvider` class inside the `config` package:
 
 ```java
+package com.example.books.config;
+
 import com.example.books.model.Role;
 import com.example.books.model.User;
 import com.example.books.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -337,6 +339,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+/* The interface which we need to implement to define the logic on how a user should be
+ * authenticated inside Spring Security framework is AuthenticationProvider
+ */
 @Component
 public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvider {
 
@@ -346,50 +351,88 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /* The authenticate(Authentication authentication) method represents all the logic for authentication. */
     @Override
     public Authentication authenticate( Authentication authentication ) throws AuthenticationException
     {
         String htmlFormUser = authentication.getName();
-        String htmlFormPassword = authentication.getCredentials()
-                                                .toString();
+        String htmlFormPassword = String.valueOf( authentication.getCredentials() );
 
+
+        /* Busca o usuário no banco de dados com base no nome informado no formulário HTML */
         User fetchedUser = userRepository.findUserWithRoleByName( htmlFormUser )
                                          .orElse( null );
 
+       /*
+        * Essa verificação substitui a chamada padrão ao UserDetailsService e PasswordEncoder.
+        * Aqui, comparamos o usuário buscado e validamos sua senha de forma segura.
+        * This condition generally calls UserDetailsService and PasswordEncoder to test the username and password.
+        */
         if ( ( fetchedUser != null ) &&
              ( fetchedUser.getId() > 0 ) &&
-             // em vez de: password.equals( fetchedUser.getPassword() ) ), usa-se senha encriptada
-             passwordEncoder.matches( htmlFormPassword, fetchedUser.getPassword() ) ) // agora com BcryptEncoder
+             // Em vez de comparar diretamente com fetchedUser.getPassword().equals(htmlFormPassword), usamos o PasswordEncoder
+             passwordEncoder.matches( htmlFormPassword, fetchedUser.getPassword() ) ) // usando BcryptEncoder
         {
+            // From Spring Security in Action 2nd edition:
+            // This class is an implementation of the Authentication interface and represents a
+            // standard authentication request with username and password
             return new UsernamePasswordAuthenticationToken(
-                // o que for passado como primeiro parâmetro (no caso getName())
-                // é o que será usado pelo spring security para fins de mostrar no HTML
-                // quem está autenticado. Nesse exemplo, o controller/endpoint
-                // irá exibir o nome. mas se eu quisesse, poderia ter autenticado pelo e-mail
-                // e passar o e-mail para ser exibido na página html como o login autenticado
+               /*
+                * O primeiro parâmetro (fetchedUser.getName()) será usado pelo Spring Security
+                * como o "nome de usuário autenticado". Por exemplo, no endpoint /dashboard,
+                * o nome exibido será esse.
+                *
+                * Se preferíssemos autenticar pelo e-mail, bastaria ajustar a lógica de autenticação
+                * e retornar fetchedUser.getEmail() aqui.
+                *
+                * Como o segundo parâmetro (credentials) não é mais necessário após a autenticação,
+                * passamos null.
+                */
                 fetchedUser.getName(), null, getGrantedAuthorities( fetchedUser.getRole() )
             );
         } else
         {
-            throw new BadCredentialsException( "Invalid credentials!" );
+            throw new AuthenticationCredentialsNotFoundException( "Invalid credentials!" );
         }
     }
 
     private List<GrantedAuthority> getGrantedAuthorities( Role role )
     {
+        /* From Spring Security in Action 2nd edition:
+         * "GrantedAuthority: It represents a privilege granted to the user. A user must have at
+         * least one authority. To create an authority, you only need to find a name for that
+         * privilege. Another possibility is to use the SimpleGrantedAuthority class to create
+         * authority instances. The SimpleGrantedAuthority class offers a way to create immutable
+         * instances of the type GrantedAuthority. Spring Security uses authorities to refer either
+         * to fine-grained privileges or to roles, which are groups of privileges."
+         */
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add( new SimpleGrantedAuthority( "ROLE_" + role.getRole()
-                                                                          .toUpperCase() ) );
+        grantedAuthorities.add(
+            new SimpleGrantedAuthority( role.getRole().toUpperCase() )
+        );
         return grantedAuthorities;
     }
 
+   /*  Informa ao Spring Security que o nosso AuthenticationProvider suporta (como DaoAuthenticationProvider)
+    *  autenticações do tipo UsernamePasswordAuthenticationToken.
+    *  O ProviderManager usa este método para decidir qual AuthenticationProvider usar
+    *  com base no tipo do objeto Authentication recebido.
+    */
     @Override
-    public boolean supports( Class<?> authentication )
+    public boolean supports( Class<?> authenticationType )
     {
-        return authentication.equals( UsernamePasswordAuthenticationToken.class );
+        // From Spring Security in Action 2nd edition:
+        // "type/style of the Authentication implementation here"
+        // Then we must decide what kind of Authentication interface
+        // implementation this AuthenticationProvider supports.
+        // Implement the supports (Class<?> authentication) method to specify which type of
+        // authentication is supported by the AuthenticationProvider that we define.
+        // That depends on what type we expect to be provided as a parameter to the authenticate()method
+        // em outras palavras, o tipo de autenticação que nosso AuthenticationProvider suportará
+        return UsernamePasswordAuthenticationToken.class
+                    .isAssignableFrom( authenticationType );
     }
 }
-
 ```
 
 ## Spring Repositories for User and Role classes
@@ -439,7 +482,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
         <div class="container mt-4">
             <h2 class="mb-4">Books List</h2>
 
-            <!-- roles displayed without brackets, and bold font -->
+            <!-- Login button visible to unauthenticated users -->
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}" class="btn btn-success mb-3">Login</a>
+            </div>
+
+            <!-- Visible Only to Authenticated Users -->
+            <!-- Roles are displayed without brackets, and bold font -->
             <div sec:authorize="isAuthenticated()">
                 <p>Welcome, <span sec:authentication="name"></span>!</p>
                 <p>Your roles:
@@ -450,10 +499,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 </p>
             </div>
 
-            <a href="/books/add" class="btn btn-primary mb-3">Add New Book</a>
+            <!-- Visible Only to Admins Users -->
+            <a sec:authorize="hasRole('ROLE_ADMIN')"
+               th:href="@{/books/add}" class="btn btn-primary mb-3">Add New Book</a>
 
             <!-- Visible Only to Authenticated Users -->
-            <div sec:authorize="isAuthenticated()"  style="display:inline;">
+            <div sec:authorize="isAuthenticated()" style="display:inline;">
                 <form th:action="@{/logout}" method="post" style="display:inline;">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <button type="submit" class="btn btn-success mb-3">Logout</button>
@@ -466,7 +517,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         <th>ID</th>
                         <th>Title</th>
                         <th>Price $</th>
-                        <th sec:authorize="isAuthenticated()">Actions</th>
+                        <th sec:authorize="isAuthenticated() and !hasRole('ROLE_USER')">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -474,22 +525,22 @@ public interface UserRepository extends JpaRepository<User, Long> {
                         <td th:text="${book.id}"></td>
                         <td th:text="${book.title}"></td>
                         <td th:text="${book.price}"></td>
-                        <td>
+                        <td sec:authorize="isAuthenticated()">
                             <!-- Edit Button (Only for Admins) -->
-                            <a sec:authorize="hasRole('ADMIN')"
-                               th:href="@{/books/edit/{id}(id=${book.id})}"
+                            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/books/edit/{id}(id=${book.id})}"
                                class="btn btn-warning btn-sm">Edit</a>
                             <!-- Delete Button (Only for Admins) -->
-                            <a sec:authorize="hasRole('ADMIN')"
-                               th:href="@{/books/delete/{id}(id=${book.id})}"
+                            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/books/delete/{id}(id=${book.id})}"
                                class="btn btn-danger btn-sm"
                                onclick="return confirm('Are you sure you want to delete this book?');">Delete</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
+            <a href="/" class="btn btn-dark">Home</a>
         </div>
     </body>
+
 </html>
 ```
 

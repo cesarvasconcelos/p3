@@ -86,7 +86,7 @@ public class MyUsernamePwdAuthenticationProvider implements AuthenticationProvid
          */
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         grantedAuthorities.add(
-            new SimpleGrantedAuthority( "ROLE_" + role.getRole().toUpperCase() )
+            new SimpleGrantedAuthority( role.getRole().toUpperCase() )
         );
         return grantedAuthorities;
     }
