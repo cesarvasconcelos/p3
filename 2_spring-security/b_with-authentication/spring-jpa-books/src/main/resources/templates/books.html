@@ -48,7 +48,7 @@
                         <th>ID</th>
                         <th>Title</th>
                         <th>Price $</th>
-                        <th sec:authorize="isAuthenticated() and !hasRole('ROLE_USER')">Actions</th>
+                        <th sec:authorize="hasRole('ROLE_ADMIN')">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,7 +56,7 @@
                         <td th:text="${book.id}"></td>
                         <td th:text="${book.title}"></td>
                         <td th:text="${book.price}"></td>
-                        <td sec:authorize="isAuthenticated()">
+                        <td sec:authorize="hasRole('ROLE_ADMIN')">
                             <!-- Edit Button (Only for Admins) -->
                             <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/books/edit/{id}(id=${book.id})}"
                                class="btn btn-warning btn-sm">Edit</a>
