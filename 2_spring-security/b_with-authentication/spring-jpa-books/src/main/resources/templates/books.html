@@ -7,6 +7,8 @@
         <title>Book List</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <!-- Bootstrap Icons CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     </head>
 
     <body>
@@ -15,7 +17,8 @@
 
             <!-- Login button visible to all users -->
             <div sec:authorize="!isAuthenticated()">
-                <a th:href="@{/login}" class="btn btn-success mb-3">Login</a>
+                <a th:href="@{/login}" class="btn btn-primary">
+                     <i class="bi bi-box-arrow-in-right me-2"></i>Login</a>
             </div>
 
             <!-- Visible Only to Authenticated Users -->
@@ -68,7 +71,7 @@
                     </tr>
                 </tbody>
             </table>
-            <a href="/" class="btn btn-dark">Home</a>
+            <a href="/" class="btn btn-dark"><i class="bi bi-house-door me-2"></i>Home</a>
         </div>
     </body>
 
