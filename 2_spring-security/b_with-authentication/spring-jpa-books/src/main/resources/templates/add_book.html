@@ -22,7 +22,8 @@
 
                 <!-- Book Title Field -->
                 <div class="mb-3">
-                    <label class="form-label">Title</label>
+                    <label class="form-label">
+                         <i class="bi bi-book me-1"></i>Title <span class="text-danger">*</span></label>
                     <input type="text" class="form-control"
                            th:field="*{title}"
                            th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : (${book.title != null} ? 'is-valid' : '')"
