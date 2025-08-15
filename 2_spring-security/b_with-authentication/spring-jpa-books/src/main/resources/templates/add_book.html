@@ -34,16 +34,36 @@
                     <div class="valid-feedback" th:unless="${#fields.hasErrors('title')}" th:if="${book.title != null}">Looks good!</div>
                 </div>
                 <!-- Book Price Field -->
+                <!--<div class="mb-3">-->
+                <!--    <label class="form-label">Price</label>-->
+                <!--    <input type="number" step="0.01" class="form-control"-->
+                <!--           th:field="*{price}"-->
+                <!--           th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : (${book.price > 0} ? 'is-valid' : '')">-->
+                <!--    &lt;!&ndash; Error message for invalid input &ndash;&gt;-->
+                <!--    <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>-->
+                <!--    &lt;!&ndash; Valid feedback for correct input &ndash;&gt;-->
+                <!--    <div class="valid-feedback" th:unless="${#fields.hasErrors('price')}" th:if="${book.price > 0}">Looks good!</div>-->
+                <!--</div>-->
+
+                <!-- Price -->
                 <div class="mb-3">
-                    <label class="form-label">Price</label>
-                    <input type="number" step="0.01" class="form-control"
-                           th:field="*{price}"
-                           th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : (${book.price > 0} ? 'is-valid' : '')">
-                    <!-- Error message for invalid input -->
-                    <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
-                    <!-- Valid feedback for correct input -->
-                    <div class="valid-feedback" th:unless="${#fields.hasErrors('price')}" th:if="${book.price > 0}">Looks good!</div>
+                    <label class="form-label">
+                        <i class="bi bi-currency-dollar me-1"></i>Price <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               th:field="*{price}"
+                               th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : (${book.price > 0} ? 'is-valid' : '')"
+                               step="0.01" placeholder="0.00" required>
+                        <!-- Error message for invalid input -->
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                        <!-- Valid feedback for correct input -->
+                        <div class="valid-feedback" th:unless="${#fields.hasErrors('price')}" th:if="${book.price > 0}">Looks good!</div>
+                    </div>
+                    <div class="form-text">Price must be between $0.01 and $3000.00</div>
                 </div>
+
                 <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary mb-3">Save</button>
             </form>
