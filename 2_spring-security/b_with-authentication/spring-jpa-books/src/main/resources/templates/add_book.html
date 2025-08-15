@@ -13,7 +13,7 @@
     <body>
         <div class="container mt-4">
             <h2><i class="bi bi-plus-circle-fill me-3"></i>Add New Book</h2>
-            <p class=" text-muted">Fill in the details to add a new book to the library</p>
+            <p class=" text-muted">Fill in the details to add a new book to the bookstore</p>
             <form th:action="@{/books/add}" method="post" th:object="${book}" class="needs-validation">
                 <!-- Global Error Alert -->
                 <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
@@ -27,7 +27,7 @@
                     <input type="text" class="form-control"
                            th:field="*{title}"
                            th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : (${book.title != null} ? 'is-valid' : '')"
-                           required>
+                           required autofocus>
                     <!-- Error message for invalid input -->
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
                     <!-- Valid feedback for correct input -->
@@ -74,6 +74,24 @@
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <button type="submit" class="btn btn-success"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
             </form>
+
+            <!-- Form Help -->
+            <div class="row mt-4">
+                <div class="col-lg-8">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-info-circle-fill text-info me-2"></i>Form Guidelines
+                            </h6>
+                            <ul class="mb-0 small">
+                                <li>All fields marked with <span class="text-danger">*</span> are required</li>
+                                <li>Title must not be blank</li>
+                                <li>Price must be between $0.01 and $3000.00</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 
