@@ -64,9 +64,27 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button class="btn btn-success" type="submit">Save Changes</button>
-                <a class="btn btn-danger" th:href="@{/books}">Cancel</a>
+                <button class="btn btn-success" type="submit"><i class="bi bi-save me-2"></i> Save Changes</button>
+                <a class="btn btn-danger" th:href="@{/books}"><i class="bi bi-arrow-left-circle me-2"></i>Cancel</a>
             </form>
+
+            <!-- Form Help -->
+            <div class="row mt-4">
+                <div class="col-lg-8">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-info-circle-fill text-info me-2"></i>Form Guidelines
+                            </h6>
+                            <ul class="mb-0 small">
+                                <li>All fields marked with <span class="text-danger">*</span> are required</li>
+                                <li>Title must not be blank</li>
+                                <li>Price must be between $0.01 and $3000.00</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </body>
