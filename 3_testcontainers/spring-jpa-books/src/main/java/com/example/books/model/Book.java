@@ -1,5 +1,6 @@
 package com.example.books.model;
 
+import com.example.books.constraints.PriceLimit;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +30,7 @@ public class Book {
 
     @NotNull( message = "Price is required" ) // ensures the price is present.
     @Positive( message = "Price must be greater than zero" )
+    @PriceLimit(limit = 3000D) // my customized constraint annotation
     @Column( name = "book_price", nullable = false, precision = 10, scale = 2 )
     private BigDecimal price;
 
