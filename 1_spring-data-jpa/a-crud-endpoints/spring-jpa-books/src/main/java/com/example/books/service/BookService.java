@@ -17,6 +17,7 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
+    @Transactional( readOnly = true )
     public List<Book> findAll()
     {
         return bookRepository.findAll();
@@ -28,6 +29,7 @@ public class BookService {
         return bookRepository.save( entity );
     }
 
+    @Transactional
     public void deleteById( Long aLong )
     {
         bookRepository.deleteById( aLong );
