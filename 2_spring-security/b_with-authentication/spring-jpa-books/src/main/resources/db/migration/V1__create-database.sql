@@ -32,3 +32,11 @@ ALTER TABLE tbl_role
 ALTER TABLE tbl_user
     ADD CONSTRAINT FK_TO_ROLE_ID
         FOREIGN KEY (user_fk_role) REFERENCES tbl_role (role_id);
+
+-- Each user has a foreign key user_fk_role pointing to tbl_role.role_id.
+-- This means that each user must have a role assigned to them.
+-- Each role has a unique role name (e.g., ADMIN, USER).
+-- One role (e.g., ADMIN) can be referenced by many users.
+-- But one user can only have one role in this schema.
+-- This is a one-to-many relationship, where one role can be assigned to many users,
+-- but each user can only have one role.
