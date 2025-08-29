@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     // "spring.test.database.replace=none",
     // "spring.flyway.enabled=false",
     "spring.datasource.url=jdbc:tc:mysql:8.1:///mytestdb"
+    // se tiver um init script: jdbc:tc:mysql:8.0.36:///databasename?TC_INITSCRIPT=somepath/init_mysql.sql
 })
 @Sql(scripts = "classpath:/sql/create-test-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:/sql/drop-test-database.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
