@@ -14,6 +14,8 @@
             <h2 class="mb-3"><i class="bi bi-pencil-fill me-3"></i>Edit Book</h2>
             <p class=" text-muted">Update the book information below</p>
             <form method="post" th:action="@{/books/edit/{id}(id=${book.id})}" th:object="${book}">
+                <!-- Thymeleaf automatically adds CSRF token here -->
+                <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
                 <!-- Global Error Alert -->
                 <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
                     Please fix the errors below and try again.
