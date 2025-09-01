@@ -15,6 +15,7 @@
             <h2><i class="bi bi-plus-circle-fill me-3"></i>Add New Book</h2>
             <p class=" text-muted">Fill in the details to add a new book to the bookstore</p>
             <form th:action="@{/books/add}" method="post" th:object="${book}" class="needs-validation">
+                <!-- Thymeleaf automatically adds CSRF token here -->
                 <!-- Global Error Alert -->
                 <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
                     Please fix the errors below and try again.
