@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest // Enables Spring Data JPA testing (rolls back transactions after each test)
 @Import({TestcontainersConfiguration.class})
 @ActiveProfiles("test") // Activate the "test" profile, $mvn clean test -Dspring.profiles.active=test
+// ou ainda @TestPropertySource("classpath:/application-test.properties")
 @Sql(scripts = "classpath:/sql/create-test-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:/sql/drop-test-database.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class BookRepositoryUsingSpringTestContainersSupportTest {
