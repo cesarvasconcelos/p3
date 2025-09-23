@@ -39,7 +39,7 @@ public class BookController {
     //   são usados em vários endpoints diferentes
     // - Para evitar duplicação de código quando o mesmo objeto é usado em diferentes views
     @ModelAttribute( "book" )
-    private Book bindBookObjectToHtmlForm()
+    private Book prepareBookForModel()
     {
         return new Book(); // Initialize an empty Book "COMMAND OBJECT" to be used in forms
     }
