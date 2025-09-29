@@ -48,7 +48,9 @@ public class BookService {
             Book updatedBook = existingBook.get();
             updatedBook.setTitle(title);
             updatedBook.setPrice(price);
-            return Optional.of(bookRepository.save(updatedBook));
+            // No need for explicit repo.save() - dirty checking will handle it
+            // return Optional.of(bookRepository.save(updatedBook));
+            return Optional.of(updatedBook);
         }
         return Optional.empty();
     }
