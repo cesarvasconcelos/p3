@@ -5,6 +5,7 @@ import com.example.books.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
+    @Transactional( readOnly = true )
     public List<Book> findAll()
     {
         return bookRepository.findAll();
@@ -29,10 +31,26 @@ public class BookService {
         return bookRepository.save( entity );
     }
 
+    @Transactional
     public void deleteById( Long aLong )
     {
         bookRepository.deleteById( aLong );
     }
 
+    @Transactional( readOnly = true )
     public Optional<Book> findById( Long aLong ) { return bookRepository.findById( aLong ); }
+
+    @Transactional
+    public Optional<Book> updateBook(Long id, String title, BigDecimal price )
+    {
+        Optional<Book> existingBook = bookRepository.findById(id);
+        if (existingBook.isPresent()) {
+            Book updatedBook = existingBook.get();
+            updatedBook.setTitle(title);
+            updatedBook.setPrice(price);
+            // No need for explicit repo.save() - dirty checking will handle it
+            return Optional.of(updatedBook);
+        }
+        return Optional.empty();
+    }
 }

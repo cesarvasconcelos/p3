@@ -39,7 +39,7 @@ public class BookController {
     @ModelAttribute( "book" )
     private Book bindBookToHtmlForm()
     {
-        return new Book(); // Initialize an empty User COMMAND OBJECT
+        return new Book(); // Initialize an empty Book "COMMAND OBJECT"
     }
 
     @GetMapping( "/books/add" )
@@ -56,16 +56,18 @@ public class BookController {
             return "add_book";
         }
         bookService.save( book );
-        return "redirect:/books";
+        return "redirect:/books"; // Redirect to books list
     }
 
+    // Endpoint to delete a book given its <id>
     @GetMapping( "/books/delete/{id}" )
     public String deleteBook( @PathVariable Long id )
     {
         bookService.deleteById( id );
-        return "redirect:/books"; // Redirect to book list
+        return "redirect:/books"; // Redirect to books list
     }
 
+    // Display edit book form
     @GetMapping("/books/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model)
     {
@@ -85,15 +87,8 @@ public class BookController {
             return "edit_book";
         }
 
-        // Ensure we only update title and price, not the ID
-        Optional<Book> existingBook = bookService.findById( id );
-        if (existingBook.isPresent()) {
-            Book updatedBook = existingBook.get();
-            updatedBook.setTitle(book.getTitle());
-            updatedBook.setPrice(book.getPrice());
-            bookService.save( updatedBook );
-        }
-
+        // Delegate the update logic to the service layer (better separation of concerns)
+        bookService.updateBook(id, book.getTitle(), book.getPrice());
         return "redirect:/books"; // Redirect after updating
     }
 }
