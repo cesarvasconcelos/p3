@@ -145,6 +145,13 @@ spring.thymeleaf.cache=false
 #spring.docker.compose.lifecycle-management=start_only
 # Whether Docker Compose support is enabled
 #spring.docker.compose.enabled=false
+
+# Optional: Enable SQL logging to see Hibernate dirty checking in action
+# spring.jpa.show-sql=true
+# spring.jpa.properties.hibernate.format_sql=true
+# logging.level.org.hibernate.orm.jdbc.bind=TRACE
+# logging.level.org.hibernate.SQL=DEBUG
+# logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
 ```
 
 ## Database Setup with Flyway Migrations
@@ -518,6 +525,7 @@ import com.example.books.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -530,6 +538,7 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
+    @Transactional( readOnly = true )
     public List<Book> findAll() {
         return bookRepository.findAll();
     }
@@ -539,12 +548,37 @@ public class BookService {
         return bookRepository.save( entity );
     }
 
+    @Transactional
     public void deleteById( Long aLong ) {
         bookRepository.deleteById( aLong );
     }
 
+    @Transactional( readOnly = true )
     public Optional<Book> findById( Long aLong ) {
         return bookRepository.findById( aLong );
+    }
+
+    /**
+     * Updates a book's title and price using Hibernate dirty checking.
+     * This method encapsulates the business logic for updating books,
+     * ensuring proper separation of concerns.
+     * 
+     * @param id The book ID to update
+     * @param title The new title
+     * @param price The new price
+     * @return Optional containing the updated book, or empty if not found
+     */
+    @Transactional
+    public Optional<Book> updateBook(Long id, String title, BigDecimal price ) {
+        Optional<Book> existingBook = bookRepository.findById(id);
+        if (existingBook.isPresent()) {
+            Book updatedBook = existingBook.get();
+            updatedBook.setTitle(title);
+            updatedBook.setPrice(price);
+            // No need for explicit repo.save() - Hibernate dirty checking handles it automatically
+            return Optional.of(updatedBook);
+        }
+        return Optional.empty();
     }
 }
 ```
@@ -763,15 +797,9 @@ public class BookController {
             return "edit_book";
         }
 
-        Optional<Book> existingBook = bookService.findById( id );
-        if (existingBook.isPresent()) {
-            Book updatedBook = existingBook.get();
-            updatedBook.setTitle(book.getTitle());
-            updatedBook.setPrice(book.getPrice());
-            bookService.save( updatedBook );
-        }
-
-        return "redirect:/books";
+        // Delegate the update logic to the service layer (better separation of concerns)
+        bookService.updateBook(id, book.getTitle(), book.getPrice());
+        return "redirect:/books"; // Redirect after updating
     }
 }
 ```
@@ -1043,7 +1071,7 @@ Create the following templates in `src/main/resources/templates/`:
 Create `src/main/resources/ValidationMessages.properties`:
 
 ```properties
-com.example.books.constraints.priceLimit=Price must be a value lower than {limit}
+com.example.books.constraints.priceLimit=Price must not exceed ${limit}
 ```
 
 ## Running the Application
