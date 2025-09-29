@@ -49,22 +49,71 @@
             return "edit_book";
         }
 
-        // Ensure we only update title and price, not the ID
-        Optional<Book> existingBook = bookService.findById(id);
-        if (existingBook.isPresent()) {
-            Book updatedBook = existingBook.get();
-            updatedBook.setTitle(book.getTitle());
-            updatedBook.setPrice(book.getPrice());
-            bookService.save(updatedBook);
-        }
-
+        // Delegate the update logic to the service layer (better separation of concerns)
+        bookService.updateBook(id, book.getTitle(), book.getPrice());
         return "redirect:/books"; // Redirect after updating
     }
 
 ```
+
 - In `BookService`, add the following methods:
+
 ```java
+    @Transactional( readOnly = true )
     public Optional<Book> findById( Long id ) { return bookRepository.findById( id ); }
+
+    // NEW: Dedicated update method that encapsulates business logic
+    @Transactional
+    public Optional<Book> updateBook(Long id, String title, BigDecimal price )
+    {
+        Optional<Book> existingBook = bookRepository.findById(id);
+        if (existingBook.isPresent()) {
+            Book updatedBook = existingBook.get();
+            updatedBook.setTitle(title);
+            updatedBook.setPrice(price);
+            // No need for explicit repo.save() - Hibernate dirty checking handles it automatically
+            return Optional.of(updatedBook);
+        }
+        return Optional.empty();
+    }
+```
+
+## Architecture Improvements Made:
+
+### 1. **Separation of Concerns**
+- **Before**: Controller handled both HTTP concerns AND business logic (finding existing book, updating fields, saving)
+- **After**: Controller only handles HTTP concerns, Service layer handles business logic
+
+### 2. **Service Layer Enhancement**
+- Added dedicated `updateBook()` method that encapsulates update business rules
+- Method ensures only title and price are updated (business rule)
+- Uses `@Transactional` for proper transaction management
+
+### 3. **Hibernate Dirty Checking Optimization**
+- Removed explicit `bookRepository.save()` call
+- Leverages Hibernate's automatic dirty checking within transaction boundaries
+- More efficient and follows JPA best practices
+
+### 4. **Benefits of This Refactoring**
+- **Reusability**: `updateBook()` method can be used by other parts of the application
+- **Testability**: Business logic is now easier to unit test in isolation
+- **Maintainability**: Changes to update rules only require service layer modifications
+- **Performance**: Hibernate dirty checking is more efficient than explicit saves
+- **Clean Code**: Controller is now focused solely on web concerns
+
+## Optional: Enable SQL Logging to See Dirty Checking in Action
+
+Add these properties to `application.properties` to observe Hibernate's automatic UPDATE statements:
+
+```properties
+# Show SQL statements with formatting
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Show parameter binding
+logging.level.org.hibernate.orm.jdbc.bind=TRACE
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
 ```
 
 - Add `edit_book.html` :
