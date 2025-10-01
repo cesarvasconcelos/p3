@@ -43,17 +43,34 @@ As documentações oficiais:
 
 Outros links:
 
-- [Spring initializr](https://start.spring.io/) para gerar projetos
+- [Spring initializr](https://start.spring.io/) para gerar projetos. Alternativamente, pode-se usar
+  o comando `spring init` via linha de comando (instalável via [SDKMAN](https://sdkman.io/)) com
+  parâmetros como, por exemplo:
+  ```bash
+  spring init \
+  --name=my-web-app \
+  --groupId=com.example \
+  --artifactId=my-web-app \
+  --package-name=com.example.mywebapp \
+  --dependencies=web,security,data-jpa,mariadb,docker-compose,testcontainers,thymeleaf,validation,flyway \
+  --java-version=21 \
+  --packaging=jar \
+  --version=0.0.1-SNAPSHOT \
+  --boot-version=3.5.6 \
+  --build=maven \
+  my-web-app
+  ```
 - [Thymeleaf](https://www.thymeleaf.org/)
 
 ## Suporte ferramental básico
 
 - Um navegador (Firefox, Brave, Google Chrome, Opera, Safari, etc.)
-- Uma distribuição OpenJDK (e.g., [Amazon Correto](https://aws.amazon.com/corretto/))
+- Uma distribuição OpenJDK (e.g., [Amazon Correto](https://aws.amazon.com/corretto/)) - pode ser instalada via [SDKMAN](https://sdkman.io/)
 - [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 - [Apache Maven](https://maven.apache.org/)
 - [Docker Desktop](https://docs.docker.com/get-started/get-docker/)
-- Um editor de texto (e.g., [Visual Studio Code](https://code.visualstudio.com/))
+- Um editor de texto (e.g., [Visual Studio Code](https://code.visualstudio.com/) ou [TRAE](https://trae.ai/))
+- Spring Boot CLI (instalável via [SDKMAN](https://sdkman.io/)) para usar o comando `spring init`
 - Algumas [extensões](https://marketplace.visualstudio.com/vscode) do Visual Studio Code, que serão sugeridas pelo professor.
 
 ## Este repositório
