@@ -40,6 +40,7 @@ As documentações oficiais:
 - [Spring Framework Javadoc API](https://docs.spring.io/spring-framework/docs/current/javadoc-api/)
 - [HTML Reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference)
 - [CSS Reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference)
+- [Thymeleaf](https://www.thymeleaf.org/)
 
 Outros links:
 
@@ -60,7 +61,6 @@ Outros links:
   --build=maven \
   my-web-app
   ```
-- [Thymeleaf](https://www.thymeleaf.org/)
 
 ## Suporte ferramental básico
 
