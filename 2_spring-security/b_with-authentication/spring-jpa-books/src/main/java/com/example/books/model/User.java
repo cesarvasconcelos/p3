@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -27,12 +28,8 @@ public class User {
     @Column( name = "user_password", nullable = false, length = 250 )
     private String password;
 
-    @OneToOne(
-        fetch = FetchType.LAZY,
-        optional = false, // NOT NULL; // Required for lazy loading with proxies!
-        cascade = CascadeType.PERSIST
-    )
-    @JoinColumn( name = "user_fk_role",  referencedColumnName = "role_id", unique = true )
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_fk_role", nullable = false, referencedColumnName = "role_id")
     private Role role;
 
     public User() {}
