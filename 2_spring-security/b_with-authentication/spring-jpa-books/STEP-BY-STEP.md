@@ -143,15 +143,23 @@ spring.thymeleaf.cache=false
 
 # Docker container will not be closed when application shutdown
 #spring.docker.compose.lifecycle-management=start_only
+
 # Whether Docker Compose support is enabled
 #spring.docker.compose.enabled=false
 
 # Optional: Enable SQL logging to see Hibernate dirty checking in action
+# https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html
 # spring.jpa.show-sql=true
-# spring.jpa.properties.hibernate.format_sql=true
-# logging.level.org.hibernate.orm.jdbc.bind=TRACE
-# logging.level.org.hibernate.SQL=DEBUG
-# logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.use_sql_comments=true
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type=TRACE
+logging.level.org.hibernate.type.descriptor.sql=TRACE
+logging.level.org.hibernate.orm.jdbc.bind=TRACE
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=TRACE
+
+logging.file.name=logs/bookstore.log
+logging.file.path=logs
 ```
 
 ## Database Setup with Flyway Migrations
@@ -416,6 +424,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -435,35 +444,32 @@ public class User {
     @Column( name = "user_password", nullable = false, length = 250 )
     private String password;
 
-    @OneToOne(
-        fetch = FetchType.LAZY,
-        optional = false,
-        cascade = CascadeType.PERSIST
-    )
-    @JoinColumn( name = "user_fk_role", referencedColumnName = "role_id", unique = true )
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_fk_role", nullable = false, referencedColumnName = "role_id")
     private Role role;
 
     public User() {}
-    public User( String name, String password ) {
+    public User( String name, String password )
+    {
         this.name = name;
         this.password = password;
     }
 
-    public Role getRole() { return role; }
-    public void setRole( Role role ) { this.role = role; }
+    public Role getRole() {return role;}
+    public void setRole( Role role ) {this.role = role;}
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getPassword() { return password; }
+    public Long getId() {return id;}
+    public String getName() {return name;}
+    public String getPassword() {return password;}
 
-    @Override
-    public boolean equals( Object o ) {
+    @Override public boolean equals( Object o )
+    {
         if ( !( o instanceof User user ) ) return false;
         return Objects.equals( name, user.name ) && Objects.equals( password, user.password );
     }
 
-    @Override
-    public int hashCode() {
+    @Override public int hashCode()
+    {
         return Objects.hash( name, password );
     }
 }
@@ -500,16 +506,15 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
 package com.example.books.repository;
 
 import com.example.books.model.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query( "SELECT u FROM User u JOIN FETCH u.role WHERE u.name = :name" )
-    Optional<User> findUserWithRoleByName( @Param( "name" ) String name );
+    @EntityGraph(attributePaths = "role")
+    Optional<User> findUserWithRoleByName(String name);
 }
 ```
 
@@ -562,7 +567,7 @@ public class BookService {
      * Updates a book's title and price using Hibernate dirty checking.
      * This method encapsulates the business logic for updating books,
      * ensuring proper separation of concerns.
-     * 
+     *
      * @param id The book ID to update
      * @param title The new title
      * @param price The new price
