@@ -45,8 +45,8 @@ As documentações oficiais:
 Outros links:
 
 - [Spring initializr](https://start.spring.io/) para gerar projetos. Alternativamente, pode-se usar
-  o comando `spring init` via linha de comando (instalável via [SDKMAN](https://sdkman.io/)) com
-  parâmetros como, por exemplo:
+  o comando `spring init` via linha de comando (instalável via [SDKMAN](https://sdkman.io/sdks/springboot/)) com
+  parâmetros, por exemplo:
   ```bash
   spring init \
   --name=my-web-app \
@@ -57,7 +57,7 @@ Outros links:
   --java-version=21 \
   --packaging=jar \
   --version=0.0.1-SNAPSHOT \
-  --boot-version=3.5.6 \
+  --boot-version=3.5.7 \
   --build=maven \
   my-web-app
   ```
