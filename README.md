@@ -13,24 +13,22 @@ programação.
 
 ## Objetivos de aprendizado
 
-- Como projetar e implementar aplicações Web coorporativas usando framework Spring
+- Como projetar e implementar aplicações Web coorporativas usando framework [Spring](https://spring.io/projects/spring-framework)
 - Implementar o front-end e back-end de uma aplicação Web típica
 - Operações CRUD, submissão de formulários HTML, validação e integração com banco de dados
-- Spring ecossistema: Spring Web MVC, Spring Integration, Spring Testing, Spring Boot, Spring
-  Data/JPA, Spring Security and Spring AOP
+- Spring ecossistema: [Spring Web MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html), [Spring Integration](https://spring.io/projects/spring-integration), [Spring Testing](https://docs.spring.io/spring-framework/reference/testing.html), [Spring Boot](https://spring.io/projects/spring-boot), [Spring Data JPA](https://spring.io/projects/spring-data-jpa), [Spring Security](https://spring.io/projects/spring-security) e [Spring AOP](https://docs.spring.io/spring-framework/reference/core/aop.html)
 - No Spring Security, como realizar autenticação com login, gerência de sessões e autorização baseada em privilégios
 - Discutir boas práticas no projeto de aplicações orientadas a microserviços
-- Construir REST APIs e Aplicações Web com Spring MVC, Thymeleaf, Bootstrap CSS
-- Persistência em banco de dados usando Spring Data JDBC/JPA, MySQL/MariaDB, Flyway
-- Como utilizar ORM Frameworks (e.g., Hibernate)
-- Setup do desenvolvimento local com Docker, Docker Compose e Testcontainers
-- Usar o JUnit5, AssertJ, Mockito para testes
+- Construir REST APIs e Aplicações Web com [Spring MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html), [Thymeleaf](https://www.thymeleaf.org/), [Bootstrap CSS](https://getbootstrap.com/)
+- Persistência em banco de dados usando [Spring Data JDBC](https://spring.io/projects/spring-data-jdbc)/[JPA](https://spring.io/projects/spring-data-jpa), [MySQL](https://dev.mysql.com/doc/)/[MariaDB](https://mariadb.org/), [Flyway](https://flywaydb.org/)
+- Como utilizar ORM Frameworks (e.g., [Hibernate](https://hibernate.org/orm/))
+- Setup do desenvolvimento local com [Docker](https://docs.docker.com/), [Docker Compose](https://docs.docker.com/compose/), [Testcontainers](https://testcontainers.com/)
+- Usar o [JUnit](https://junit.org/), [AssertJ](https://assertj.github.io/doc/), [Mockito](https://site.mockito.org/) para testes
 
 ## Material de Referência
 
 Os principais materiais de estudo usados na disciplina são os seguintes livros: [Spring Start
-Here](https://www.manning.com/books/spring-start-here) e [Use a Cabeça! HTML e
-CSS](https://www.amazon.com.br/Use-Cabe%C3%A7a-HTML-Eric-Freeman/dp/8576088622).
+Here](https://www.manning.com/books/spring-start-here) e [Use a Cabeça! HTML e CSS](https://www.amazon.com.br/Use-Cabe%C3%A7a-HTML-Eric-Freeman/dp/8576088622).
 Outras fontes de leitura serão indicadas pelo professor.
 
 As documentações oficiais:
@@ -45,8 +43,7 @@ As documentações oficiais:
 Outros links:
 
 - [Spring initializr](https://start.spring.io/) para gerar projetos. Alternativamente, pode-se usar
-  o comando `spring init` via linha de comando (instalável via [SDKMAN](https://sdkman.io/sdks/springboot/)) com
-  parâmetros, por exemplo:
+  o comando `spring init` via linha de comando (instalável via [SDKMAN](https://sdkman.io/sdks/springboot/)) com parâmetros, por exemplo:
   ```bash
   spring init \
   --name=my-web-app \
