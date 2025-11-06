@@ -33,13 +33,20 @@ ALTER TABLE tbl_user
     ADD CONSTRAINT FK_TO_ROLE_ID
         FOREIGN KEY (user_fk_role) REFERENCES tbl_role (role_id);
 
--- Com @WithMockUser não precisa ter um usuário real no database
+-- ------------------------------------------------
+-- Important Note: With @WithMockUser annotation, do I really need to have the user/role tables?
+-- ------------------------------------------------
+-- Tests that use @WithMockUser simulate an authenticated user in memory and
+-- do NOT require the above tbl_user/tbl_role tables to pass.
+-- *However*, UserRoleAuthenticationDatabaseTests persists and reads User/Role
+-- entities via JPA repositories and therefore DEPENDS on these tables and
+-- the foreign key user_fk_role.
+-- So keep this DDL when running the full suite (AllTestsSuite), or remove/skip
+-- UserRoleAuthenticationDatabaseTests if you choose not to create user/role tables.
 
 -- insert tbl_role (role) values ('admin');
 -- insert tbl_role (role) values ('student');
---
 -- insert tbl_user (user_name, user_password, user_fk_role)
 --        values ('admin', '$2a$12$gfTMWrXUwBU.eVPVYbz9C.dPg9kFfRCfL8oYa1TOZg63QCD8nKi1C', 1 );
---
 -- insert tbl_user (user_name, user_password, user_fk_role)
 --        values ('ana', '$2a$12$Q6gFWzwrEUUiaF4kD1M3tOqvuV1N1txnf9hxZtkAk8jLb3U5Gjv.O', 2 );
