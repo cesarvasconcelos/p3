@@ -22,12 +22,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  *   and wires a datasource without manual properties.
  * - {@code @Sql}: prepares and cleans the schema/data around each test for determinism.
  *
- * Reference: https://java.testcontainers.org/modules/databases/jdbc/
+ * Reference TestContainers & Magic URL: https://java.testcontainers.org/modules/databases/jdbc/
  */
 @DisplayName("Test class for BookRepository CRUD Operations with Magic Url and sliced @DataJpaTest")
 @DataJpaTest
 @ActiveProfiles( "test" ) // Activate the "test" profile, $mvn clean test -Dspring.profiles.active=test
-// MAGIC URL OF TESTCONTAINERS: https://java.testcontainers.org/modules/databases/jdbc/
 @TestPropertySource(properties = {
         // "spring.test.database.replace=none",
         // "spring.flyway.enabled=false",
