@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
@@ -18,16 +17,25 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/*
-    Quando se usa as classes de suporte do Spring inititizr para Testcontainers,
-    as classes de testes podem apenas fazer @Import(TestConfiguration.class) para
-    se beneficiar imediatamente do container integrado ao Junit <--- é o caso deste exemplo
+/**
+ * Repository-focused tests using the sliced {@code @DataJpaTest} configuration and Testcontainers.
+ *
+ * Highlights:
+ * - {@code @DataJpaTest} boots only JPA-related components (repositories, entities, JPA config) for fast tests.
+ * - {@code @Import(TestcontainersConfiguration.class)} wires a MySQL Testcontainer as the datasource.
+ * - {@code @ActiveProfiles("test")} activates the "test" profile. You can also pass
+ *   {@code -Dspring.profiles.active=test} when running tests (e.g., {@code mvn clean test -Dspring.profiles.active=test}).
+ * - {@code @Sql} sets up and tears down the schema and data around each test for repeatability.
+ *
+ * Why use both {@code TestEntityManager} and the repository?
+ * - Tests aim to verify repository behavior. To avoid mixing responsibilities, use {@code TestEntityManager}
+ *   for preparing database state (Arrange), then call repository methods (Act), and finally assert outcomes (Assert).
+ *   This ensures that what you validate is strictly the repository method under test, and not setup logic.
  */
 @DisplayName("Test class for BookRepository CRUD Operations with Testcontainers and sliced @DataJpaTest")
-@DataJpaTest // Enables Spring Data JPA testing (rolls back transactions after each test)
+@DataJpaTest // Enables Spring Data JPA testing and rolls back transactions after each test
 @Import({TestcontainersConfiguration.class})
-@ActiveProfiles("test") // Activate the "test" profile, $mvn clean test -Dspring.profiles.active=test
-// ou ainda @TestPropertySource("classpath:/application-test.properties")
+@ActiveProfiles("test")
 @Sql(scripts = "classpath:/sql/create-test-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "classpath:/sql/drop-test-database.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class BookRepositoryUsingSpringTestContainersSupportTest {
@@ -38,82 +46,84 @@ public class BookRepositoryUsingSpringTestContainersSupportTest {
     @Autowired
     private TestEntityManager entityManager;
 
-    /*
-       Observação importante:
-       Note que além do TestEntityManager, estou injetando meu bookRepository.
-       Isso porque, nos @Test methods, meu interesse é testar os métodos de bookRepository.
-       Por isso, para não misturar o escopo do test, vou usar TestEntityManager sempre que precisar
-       preparar o database, de forma tal que eu observe o comportamento APENAS do bookRepository.method() que preciso testar.
-       Se não fizer isso, acabarei tendo de chamar outros métodos de bookRepository
-       para verificar o resultado final ou preparar o db antes de testar --o que acaba misturando os papéis.
-    */
-
     @Test
     @DisplayName("Given an empty repository, when fetching all books, then return empty set")
     void givenEmptyBookRepo_whenFindingAll_thenIsEmpty() {
-        assertThat(bookRepository.findAll())
-            .as("Database should not contain books pre-loaded data from Flyway scripts")
-            .isEmpty();
+        // Act
+        List<Book> books = bookRepository.findAll();
+
+        // Assert
+        assertThat(books)
+                .as("Database should not contain pre-loaded data from migration scripts")
+                .isEmpty();
     }
 
     @Test
     @DisplayName("Given a set of books, when fetching all, then return all books")
     void givenSetOfBooks_whenFindingAll_thenReturnAllBooks() {
-        // pode fazer manualmente a criação do livro e inserção ou criar uma helper function
-        Book book = new Book(null, "Book 1", 19.99 );
+        // Arrange: insert two books using TestEntityManager (setup)
+        Book book = new Book(null, "Book 1", 19.99);
         entityManager.persist(book);
         entityManager.flush();
-        //insertBookIntoDatabase("Book 1", 19.99);
+
         insertBookIntoDatabase("Book 2", 29.99);
 
+        // Act
         List<Book> books = bookRepository.findAll();
 
+        // Assert
         assertThat(books)
-            .as("#findAll() should return only two books")
-            .hasSize(2);
+                .as("#findAll() should return exactly two books")
+                .hasSize(2);
         assertThat(books)
-            .as("#findAll() should return only two books")
-            .extracting(Book::getTitle)
-            .containsExactly("Book 1", "Book 2");
+                .as("#findAll() should preserve insertion order when JPA returns entities")
+                .extracting(Book::getTitle)
+                .containsExactly("Book 1", "Book 2");
     }
 
     @Test
     @DisplayName("Given a book data, when saving at repository, then success")
     void givenBook_whenSaving_thenSuccess() {
+        // Arrange
         Book book = new Book(null, "New Book", 39.99);
 
+        // Act
         bookRepository.save(book);
 
+        // Assert
         List<Book> books = selectAllBooksFromDatabase();
-
         assertThat(books).hasSize(1);
         assertThat(books.getFirst().getTitle())
-            .as("Book title should be equals to 'New Book'")
-            .isEqualTo("New Book");
+                .as("Book title should be equal to 'New Book'")
+                .isEqualTo("New Book");
         assertThat(books.getFirst().getPrice())
-            .as("Book price should be equals to 39.99")
-            .isEqualTo(BigDecimal.valueOf(39.99));
+                .as("Book price should be equal to 39.99")
+                .isEqualTo(BigDecimal.valueOf(39.99));
     }
 
     @Test
     @DisplayName("Given an existing book, when deleting by id, then success")
     void givenBook_whenDeleting_thenSuccess() {
+        // Arrange
         insertBookIntoDatabase("Book 1", 19.99);
         List<Book> books = selectAllBooksFromDatabase();
         assertThat(books).hasSize(1);
 
+        // Act
         Book first = books.getFirst();
         bookRepository.delete(first);
 
+        // Assert
         books = selectAllBooksFromDatabase();
         assertThat(books)
-            .as("The deleted book should have been removed")
-            .isEmpty();
+                .as("The deleted book should have been removed")
+                .isEmpty();
     }
 
     @Test
     @DisplayName("Given an existing book, when updating its data, then success")
     void givenBook_whenUpdating_thenSuccess() {
+        // Arrange
         insertBookIntoDatabase("Book 1", 19.99);
         List<Book> books = selectAllBooksFromDatabase();
 
@@ -121,53 +131,65 @@ public class BookRepositoryUsingSpringTestContainersSupportTest {
         book.setTitle("Book 2");
         book.setPrice(BigDecimal.valueOf(29.99D));
 
+        // Act
         bookRepository.save(book);
 
+        // Assert
         books = selectAllBooksFromDatabase();
-
         assertThat(books).hasSize(1);
         assertThat(books.getFirst().getTitle())
-            .as("Book title should be equal to 'Book 2'")
-            .isEqualTo("Book 2");
+                .as("Book title should be equal to 'Book 2'")
+                .isEqualTo("Book 2");
         assertThat(books.getFirst().getPrice())
-            .as("Book price should be equals to 29.99")
-            .isEqualTo(BigDecimal.valueOf(29.99));
+                .as("Book price should be equal to 29.99")
+                .isEqualTo(BigDecimal.valueOf(29.99));
     }
 
     @Test
     @DisplayName("Given a valid book Id, when finding by Id, then return book")
     public void givenValidBookId_whenFindById_thenReturnBook() {
+        // Arrange
         insertBookIntoDatabase("Book 1", 19.99);
         List<Book> books = selectAllBooksFromDatabase();
         Long bookId = books.getFirst().getId();
 
+        // Act
         Optional<Book> book = bookRepository.findById(bookId);
 
+        // Assert
         assertThat(book.isPresent())
-            .as("A book should have been returned from a valid Id")
-            .isTrue();
+                .as("A book should be returned for a valid Id")
+                .isTrue();
     }
 
     @Test
     @DisplayName("Given an invalid book Id, when finding by Id, then return empty")
     public void givenInvalidBookId_whenFindById_thenReturnEmpty() {
+        // Act
         Optional<Book> bookDoesNotExist = bookRepository.findById(-1L);
 
+        // Assert
         assertThat(bookDoesNotExist)
-            .as("No books should have been returned")
-            .isEmpty();
+                .as("No books should be returned for an invalid Id")
+                .isEmpty();
     }
 
-    // Helper methods
+    /**
+     * Helper: insert one book using the TestEntityManager to prepare DB state.
+     * Prefer this TestEntityManager over calling repository methods during Arrange to avoid mixing concerns.
+     */
     private void insertBookIntoDatabase(String bookTitle, double bookPrice) {
         Book book = new Book(null, bookTitle, bookPrice);
         entityManager.persist(book);
         entityManager.flush();
     }
 
+    /**
+     * Helper: select all books directly via JPQL to verify persisted state.
+     */
     private List<Book> selectAllBooksFromDatabase() {
         return entityManager.getEntityManager()
-                            .createQuery("SELECT b FROM Book b", Book.class)
-                            .getResultList();
+                .createQuery("SELECT b FROM Book b", Book.class)
+                .getResultList();
     }
 }
