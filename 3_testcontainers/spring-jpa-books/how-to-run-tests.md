@@ -1,7 +1,13 @@
+# How to run the tests
+
 ## How to run the app during development stage:
 
 - `mvn clean package -DskipTests` to **package** and create a Jar file **without** running tests
-- `mvn spring-boot:start` **to run** the app using Jar file
+- `mvn spring-boot:run` **starts** the app in the current Maven process and blocks the terminal.
+  `run` does not require a packaged JAR; runs directly from your sources. `run` stops with `Ctrl+C`.
+- `mvn spring-boot:start` **to run** the app using Jar file. It launches the packaged app in a
+  separate background process (non-blocking). `start` typically requires `mvn package` first, then
+  starts the `target/*.jar`. `start` is stopped with `mvn spring-boot:stop`.
 - `mvn spring-boot:stop` **to stop** the app using Jar file
 
 ### Running Tests
