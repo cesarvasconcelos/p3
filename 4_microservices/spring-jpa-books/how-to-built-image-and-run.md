@@ -111,6 +111,12 @@ docker-compose -f compose-deploy.yaml up -d
 # 3) Check service status and health
 docker-compose ps -a
 
+# 4) Connect to the database
+docker exec -it db mysql -uroot -p
+
+# 5) Inspect the database container
+docker inspect db
+
 ```
 
 Access the application:
