@@ -1,0 +1,9 @@
+# Excludes files and directories from the Docker build context (the data sent to the Docker daemon
+# when you run docker build)
+.git
+.gitignore
+*.md
+*.log
+*.tmp
+*.swp
+.DS_Store

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Login</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+        <!-- Bootstrap Icons CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="container m-4 w-50">
+            <h2> <i class="bi bi-box-arrow-in-right me-2"></i>
+                Login
+            </h2>
+            <p class="text-muted">Please enter your username and password to access your account.</p>
+            <form th:action="@{/login}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="bi bi-person-fill me-1"></i>
+                        Username</label>
+                    <input type="text" class="form-control" name="username" placeholder="Enter your username" required
+                        autofocus>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="bi bi-lock-fill me-1"></i>
+                        Password</label>
+                    <input type="password" class="form-control" name="password" placeholder="Enter your password"
+                        required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                </button>
+                <a href="/books" class="btn btn-danger">
+                    <i class="bi bi-arrow-left-circle me-2"></i>Cancel</a>
+            </form>
+            <!-- Error Messages -->
+            <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span>Invalid <strong>username</strong> or <strong>password</strong>.</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- Success Messages -->
+            <div th:if="${param.logout}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span>You have been logged out successfully.</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+            crossorigin="anonymous"></script>
+    </body>
+
+</html>
