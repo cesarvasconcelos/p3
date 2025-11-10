@@ -1,4 +1,4 @@
-# How to containerize and deploy the app by creating a Docker image
+# How to containerize the Bookstore App by creating a Docker image
 
 It shows how to:
 1. Build a shippable image that contains only the runnable Spring Boot JAR.
