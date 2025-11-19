@@ -75,3 +75,120 @@ Run a database container and point the app at it via environment variables.
 
 7) Open the app:
 - Visit: http://localhost:8080
+
+## Tip: How to Use .env Files with `docker run`
+
+This alternative keeps credentials and configuration in `.env` files instead of hardcoding `-e KEY=VALUE` in commands. It centralizes sensitive values, makes rotation easier, and keeps your `docker run` lines clean.
+
+### 1) Create environment files on the client
+
+Create two files side by side with your commands (or use absolute paths). Comments below explain each setting.
+
+`db.env`
+
+```properties
+# -------- MySQL container configuration --------
+# Root password for administrative access
+MYSQL_ROOT_PASSWORD=secret
+
+# Application database name to auto-create on first start
+MYSQL_DATABASE=db_bookstore
+
+# Non-root database user to auto-create with privileges on MYSQL_DATABASE
+MYSQL_USER=cesar
+MYSQL_PASSWORD=cesar123
+```
+
+`app.env`
+
+```properties
+# -------- Spring Datasource configuration --------
+# Use the container name 'db' as the host through the Docker network
+SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/db_bookstore
+
+# Prefer the non-root user defined in db.env
+# If you intentionally want to use root instead, change these two lines.
+SPRING_DATASOURCE_USERNAME=cesar
+SPRING_DATASOURCE_PASSWORD=cesar123
+```
+
+### 2) Create volume and network (same steps as above)
+
+```bash
+docker volume create vol_bookstore
+docker network create --driver=bridge bookstore-network
+```
+
+### 3) Run the database with `--env-file`
+
+Copy-paste ready:
+
+```bash
+docker run -d --name db \
+  --network bookstore-network \
+  -p 3306:3306 \
+  -v vol_bookstore:/var/lib/mysql \
+  --env-file ./db.env \
+  mysql:8.1
+```
+
+Commented version:
+
+```bash
+# Run a MySQL 8.1 container:
+# - attaches to 'bookstore-network' so the app can reach it by the host name 'db'
+# - publishes port 3306 for local tools (optional; remove if you don't need host access)
+# - mounts 'vol_bookstore' to persist data across container restarts
+# - loads DB credentials and settings from db.env
+docker run -d --name db \
+  --network bookstore-network \
+  -p 3306:3306 \
+  -v vol_bookstore:/var/lib/mysql \
+  --env-file ./db.env \
+  mysql:8.1
+```
+
+### 4) Run the app with `--env-file`
+
+Wait 10–20 seconds for MySQL to initialize, then start the app.
+
+Copy-paste ready:
+
+```bash
+docker run -d --name bookstore-app \
+  --network bookstore-network \
+  -p 8080:8080 \
+  --env-file ./app.env \
+  cesarvasconcelos/bookstore-app:1.0
+```
+
+Commented version:
+
+```bash
+# Run the Spring Boot bookstore app:
+# - attaches to 'bookstore-network' so it can connect to MySQL at host 'db'
+# - publishes port 8080 for browser access on the host
+# - loads datasource URL and credentials from app.env
+docker run -d --name bookstore-app \
+  --network bookstore-network \
+  -p 8080:8080 \
+  --env-file ./app.env \
+  cesarvasconcelos/bookstore-app:1.0
+```
+
+### 5) Verify and open the app
+
+```bash
+docker logs db
+docker logs bookstore-app
+docker ps -a
+```
+
+Visit: `http://localhost:8080`
+
+### Notes and tips
+
+- Relative vs absolute paths: `--env-file` accepts relative or absolute paths (e.g., `--env-file /home/user/config/db.env`).
+- Security: keep `.env` files out of source control and secure backups. Prefer non-root DB users for the app.
+- Switching to root (if required): set `SPRING_DATASOURCE_USERNAME=root` and `SPRING_DATASOURCE_PASSWORD=secret` in `app.env`.
+- First-run behavior: with `MYSQL_DATABASE`, `MYSQL_USER`, and `MYSQL_PASSWORD`, MySQL initializes the database and grants privileges on the first start; subsequent starts reuse data in `vol_bookstore`.
