@@ -124,17 +124,6 @@ docker network create --driver=bridge bookstore-network
 Copy-paste ready:
 
 ```bash
-docker run -d --name db \
-  --network bookstore-network \
-  -p 3306:3306 \
-  -v vol_bookstore:/var/lib/mysql \
-  --env-file ./db.env \
-  mysql:8.1
-```
-
-Commented version:
-
-```bash
 # Run a MySQL 8.1 container:
 # - attaches to 'bookstore-network' so the app can reach it by the host name 'db'
 # - publishes port 3306 for local tools (optional; remove if you don't need host access)
@@ -153,16 +142,6 @@ docker run -d --name db \
 Wait 10–20 seconds for MySQL to initialize, then start the app.
 
 Copy-paste ready:
-
-```bash
-docker run -d --name bookstore-app \
-  --network bookstore-network \
-  -p 8080:8080 \
-  --env-file ./app.env \
-  cesarvasconcelos/bookstore-app:1.0
-```
-
-Commented version:
 
 ```bash
 # Run the Spring Boot bookstore app:
