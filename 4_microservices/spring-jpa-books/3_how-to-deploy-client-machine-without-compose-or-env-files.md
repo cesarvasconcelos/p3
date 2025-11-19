@@ -136,6 +136,14 @@ docker run -d --name db \
   --env-file ./db.env \
   mysql:8.1
 ```
+```diff
+# Note: instead of using individual -e flags, use a single env-file
+-    -e MYSQL_ROOT_PASSWORD=secret \
+-    -e MYSQL_DATABASE=db_bookstore \
+-    -e MYSQL_USER=cesar \
+-    -e MYSQL_PASSWORD=cesar123 \
++    --env-file ./db.env \
+```
 
 ### 4) Run the app with `--env-file`
 
@@ -153,6 +161,13 @@ docker run -d --name bookstore-app \
   -p 8080:8080 \
   --env-file ./app.env \
   cesarvasconcelos/bookstore-app:1.0
+```
+```diff
+# Note: instead of using individual -e flags, use a single env-file
+-    -e SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/db_bookstore \
+-    -e SPRING_DATASOURCE_USERNAME=root \
+-    -e SPRING_DATASOURCE_PASSWORD=secret \
++    --env-file ./app.env \
 ```
 
 ### 5) Verify and open the app
