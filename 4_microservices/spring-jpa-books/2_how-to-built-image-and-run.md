@@ -13,11 +13,12 @@ The project includes a multi-stage `Dockerfile` and a `compose-deploy.yml` that 
 
 ### Multi-stage Build Analysis (this project’s Dockerfile)
 
-- Stage 1 (build): `maven:3.9.11-eclipse-temurin-21`
-  - Copies `pom.xml` first to leverage dependency caching.
-  - Runs `mvn dependency:go-offline` then copies `src/` and builds the JAR (`-DskipTests`).
-- Stage 2 (runtime): `eclipse-temurin:21-jre`
-  - Copies the built JAR, exposes `8080`, and uses `ENTRYPOINT` to start the app.
+- Stage 1 (builder/extract): `bellsoft/liberica-openjre-debian:21-cds`
+  - Copies the built Spring Boot JAR from `target/*.jar` to `application.jar`.
+  - Uses `java -Djarmode=tools -jar application.jar extract --layers` to unpack into `extracted/` (layered directories).
+- Stage 2 (runtime): `bellsoft/liberica-openjre-debian:21-cds`
+  - Copies `dependencies/`, `spring-boot-loader/`, `snapshot-dependencies/`, and `application/` from the builder stage.
+  - Exposes `8080` and starts the app with `ENTRYPOINT ["java", "-jar", "application.jar"]`.
 
 Benefits:
 - Smaller runtime image, faster start-up.
