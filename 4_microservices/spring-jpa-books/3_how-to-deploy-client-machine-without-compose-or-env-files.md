@@ -186,3 +186,13 @@ Visit: `http://localhost:8080`
 - Security: keep `.env` files out of source control and secure backups. Prefer non-root DB users for the app.
 - Switching to root (if required): set `SPRING_DATASOURCE_USERNAME=root` and `SPRING_DATASOURCE_PASSWORD=secret` in `app.env`.
 - First-run behavior: with `MYSQL_DATABASE`, `MYSQL_USER`, and `MYSQL_PASSWORD`, MySQL initializes the database and grants privileges on the first start; subsequent starts reuse data in `vol_bookstore`.
+
+## Final note: production orchestration
+
+Docker is a great container engine for development and packaging, but for production environments you should run containers under a container orchestrator to keep services healthy, scale across multiple servers, and ensure high availability.
+
+> <q>A container engine, such as Docker, is not enough for production. An orchestrator is needed to keep containers up and to scale them across servers, providing high availability and more compute resources.</q>
+
+This aligns with the guidance from the recent book “Microservices with Spring Boot and Spring Cloud (2025 edition)”. See the reference: https://www.amazon.com.br/Microservices-Spring-Boot-Cloud-microservices-dp-1805801279/dp/1805801279/ref=dp_ob_title_bk
+
+Common orchestrators include Kubernetes (widely adopted), Amazon ECS, HashiCorp Nomad, and similar platforms. For classroom demos, `docker run` is fine; for production, prefer an orchestrator.
