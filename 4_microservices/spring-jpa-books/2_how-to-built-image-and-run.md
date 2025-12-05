@@ -23,6 +23,14 @@ The project includes a multi-stage `Dockerfile` and a `compose-deploy.yml` that 
 Benefits:
 - Smaller runtime image, faster start-up.
 
+Added to the usage of convention over configuration, Spring Boot also favors a runtime model based on a standalone JAR file, also known as a **fat JAR file**. Before Spring Boot, the most common way to run a Spring application was to deploy it as a WAR file on a Java EE web server, such as Apache Tomcat. WAR file deployment is still supported by Spring Boot.
+
+> **Note:** A fat JAR file contains not only the classes and resource files of the application itself but **also all the JAR files the application depends on.** This means that the fat JAR file is **the only JAR file required to run the application;** that is, we only need to transfer one JAR file to an environment where we want to run the application instead of transferring the application’s JAR file along with all the JAR files the application depends on.
+
+> Starting a fat JAR requires no separately installed Java EE web server, such as Apache Tomcat. Instead, it can be started with a simple command such as `java -jar app.jar`, making it a perfect choice for running in a Docker container!
+>
+> — Magnus Larsson, [Microservices with Spring Boot & Spring Cloud, Fourth Edition](https://www.packtpub.com/en-us/product/microservices-with-spring-boot-and-spring-cloud-9781805801269)
+
 ### A. Build the Application Image (via Dockerfile)
 
 Below are step-by-step instructions to build, run, and manage the stack using Docker.
