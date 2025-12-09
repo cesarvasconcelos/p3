@@ -43,7 +43,7 @@ As documentações oficiais:
 Outros links:
 
 - [Spring initializr](https://start.spring.io/) para gerar projetos. Alternativamente, pode-se usar
-  o comando `spring init` via linha de comando (instalável via [SDKMAN](https://sdkman.io/sdks/springboot/)) com parâmetros, por exemplo:
+  **Spring Boot CLI** e o comando `spring init` via linha de comando (instalável via [SDKMAN](https://docs.spring.io/spring-boot/3.5/installing.html#getting-started.installing.cli.sdkman)) com parâmetros, por exemplo:
   ```bash
   spring init \
   --name=my-web-app \
@@ -67,7 +67,7 @@ Outros links:
 - [Apache Maven](https://maven.apache.org/)
 - [Docker Desktop](https://docs.docker.com/get-started/get-docker/)
 - Um editor de texto (e.g., [Visual Studio Code](https://code.visualstudio.com/) ou [TRAE](https://trae.ai/))
-- Spring Boot CLI (instalável via [SDKMAN](https://sdkman.io/)) para usar o comando `spring init`
+- Spring Boot CLI (instalável via [SDKMAN](https://docs.spring.io/spring-boot/3.5/installing.html#getting-started.installing.cli.sdkman)) para usar o comando `spring init`
 - Algumas [extensões](https://marketplace.visualstudio.com/vscode) do Visual Studio Code, que serão sugeridas pelo professor.
 
 ## Este repositório
