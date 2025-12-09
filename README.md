@@ -59,6 +59,10 @@ Outros links:
   my-web-app
   ```
 
+**Nota**: Se você quiser aprender mais sobre o comando *spring init* da CLI, você pode executar o
+comando `spring help init`. Para ver quais dependências podem ser adicionadas, execute o comando
+`spring init --list`.
+
 ## Suporte ferramental básico
 
 - Um navegador (Firefox, Brave, Google Chrome, Opera, Safari, etc.)
