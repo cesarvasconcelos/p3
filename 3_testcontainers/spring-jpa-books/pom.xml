@@ -113,6 +113,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.5.4</version> <!-- Use the latest version -->
+                    <!-- Uma dica é pesquisar sobre https://github.com/fabriciorby/maven-surefire-junit5-tree-reporter -->
                     <configuration>
                          <includes>
                               <include>**/com.example.books.AllTestsSuite.class</include>
