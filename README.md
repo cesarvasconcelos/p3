@@ -54,7 +54,7 @@ Outros links:
   --java-version=21 \
   --packaging=jar \
   --version=0.0.1-SNAPSHOT \
-  --boot-version=3.5.8 \
+  --boot-version=3.5.9 \
   --build=maven \
   my-web-app
   ```
@@ -85,5 +85,3 @@ $ git clone https://github.com/cesarvasconcelos/p3.git
 ## Autor
 
 * **Prof. Dr. César Vasconcelos (cesarocha@ifpb.edu.br)** - [GitHub Page](https://github.com/cesarvasconcelos)
-
-
