@@ -1,6 +1,14 @@
 # From Spring Official Docs: https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html
 # Multi-stage build for Spring Boot application
 
+# The main idea is:
+    # 1. Build the application using a separate builder container
+    # 2. Unpack the JAR file to expose the different layers that a Spring Boot application contains
+    # 3. Once the different layers are exposed, the Dockerfile creates another image at Stage #2
+    #    that will only contain the layers instead of the complete application Uber JAR
+    # 4. Still at Stage #2, the Dockerfile copies the different layers into the new image
+    # 5. Start the application using the new image
+
 # Stage 1: Build the application
 # Perform the extraction in a separate builder container
 FROM bellsoft/liberica-openjre-debian:21-cds AS builder
