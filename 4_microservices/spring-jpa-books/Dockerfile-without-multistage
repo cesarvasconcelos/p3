@@ -13,6 +13,11 @@ EXPOSE 8080
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
+## Fonte: Spring Boot Reference Guide
+# https://docs.spring.io/spring-boot/reference/packaging/container-images/efficient-images.html
+# https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html
+# https://docs.spring.io/spring-boot/maven-plugin/packaging.html#packaging.layers
+
 # Explicação curta:
 # ------------------
 # Desvantagens de usar fat jar diretamente no Docker:
