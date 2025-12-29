@@ -12,3 +12,44 @@ EXPOSE 8080
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Explicação curta:
+# ------------------
+# Desvantagens de usar fat jar diretamente no Docker:
+    # O fat jar gera um pequeno overhead na execução, pois tudo fica compactado em um único arquivo jar.
+    # Docker funciona com camadas, mas o fat jar coloca tudo em uma única camada.
+    # Qualquer alteração no código invalida portanto toda a imagem Docker.
+    # Builds ficam mais lentos e desperdiçam cache.
+    # Deploys e pipelines CI/CD se tornam menos eficientes.
+
+# Por isso, imagens em camadas são melhores, pois:
+    # dependências mudam menos frequentemente
+    # código muda mais frequentemente
+    # Docker consegue reaproveitar cache
+    # builds ficam mais rápidos
+
+# Explicação longa:
+# ------------------
+# Usar um fat jar dentro do Docker funciona, mas não aproveita bem o modelo de camadas do Docker.
+# Imagens em camadas são mais eficientes porque separam o que muda pouco (as dependências) do que
+# muda o tempo todo (o código da aplicação).
+
+# É possível criar uma imagem Docker de uma aplicação Spring Boot copiando diretamente o fat jar (ou
+# uber jar) e executando-o dentro do container. Porém, essa abordagem traz alguns problemas
+# importantes.
+
+# Primeiro, o fat jar contém todas as dependências e a aplicação empacotadas em um único arquivo.
+# Para rodar, a JVM precisa acessar classes e bibliotecas que estão comprimidas dentro desse JAR, o
+# que gera um pequeno custo extra de processamento. Em ambientes com containers, onde aplicações
+# sobem e descem com frequência, esse overhead pode se tornar perceptível.
+
+# O segundo problema está relacionado ao modo como o Docker constrói imagens. O Docker trabalha com
+# camadas (layers) e reutiliza camadas antigas sempre que possível. Quando toda a aplicação e todas
+# as dependências estão dentro de um único JAR, qualquer pequena mudança no código faz com que toda
+# a imagem precise ser reconstruída novamente.
+
+# Na prática, isso é ineficiente, porque o código da aplicação muda com muito mais frequência do que
+# as dependências ou o próprio Spring Boot. Uma estratégia melhor é separar dependências e código da
+# aplicação em camadas diferentes. Assim, quando apenas o código muda, o Docker  reaproveita as
+# camadas antigas e precisa reconstruir apenas a parte final da imagem, tornando o build mais rápido
+# e eficiente.
