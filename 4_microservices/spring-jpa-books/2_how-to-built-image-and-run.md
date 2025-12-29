@@ -73,7 +73,7 @@ docker build -t bookstore-app:latest -t bookstore-app:1.0.0 .
 ```
 
 Notes:
-- The `Dockerfile` uses a multi-stage build: Maven (build) → Temurin JRE (runtime).
+- The `Dockerfile` uses a multi-stage build: Maven (build) → Liberica OpenJRE Debian (runtime).
 - Tests are skipped in the image build (`-DskipTests` in Dockerfile). Run tests locally if needed.
 
 ### Cache Management
@@ -104,7 +104,7 @@ When to use `--progress=plain`
 
 ### B. Run the Full Stack with Docker Compose
 
-The `compose-deploy.yml` defines two services: `mysql` and `bookstore-app`. The `bookstore-app` service waits for `mysql` to be healthy before starting.
+The `compose-deploy.yaml` defines two services: `mysql` and `bookstore-app`. The `bookstore-app` service waits for `mysql` to be healthy before starting.
 
 ```bash
 # Navigate to the project directory
