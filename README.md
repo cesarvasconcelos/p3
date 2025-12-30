@@ -23,7 +23,10 @@ programação.
 - Persistência em banco de dados usando [Spring Data JDBC](https://spring.io/projects/spring-data-jdbc)/[JPA](https://spring.io/projects/spring-data-jpa), [MySQL](https://dev.mysql.com/doc/)/[MariaDB](https://mariadb.org/), [Flyway](https://flywaydb.org/)
 - Como utilizar ORM Frameworks (e.g., [Hibernate](https://hibernate.org/orm/))
 - Setup do desenvolvimento local com [Docker](https://docs.docker.com/), [Docker Compose](https://docs.docker.com/compose/), [Testcontainers](https://testcontainers.com/)
-- Usar o [JUnit](https://junit.org/), [AssertJ](https://assertj.github.io/doc/), [Mockito](https://site.mockito.org/) para testes
+- Usar o [JUnit](https://junit.org/), [AssertJ](https://assertj.github.io/doc/),  [Mockito](https://site.mockito.org/) para testes
+- Empacotar a aplicação Spring Boot (JAR), construir [imagens Docker eficientes](https://docs.spring.io/spring-boot/reference/packaging/container-images/efficient-images.html) usando [Dockerfiles](https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html)
+e boas práticas de [empacotamento em camadas](https://docs.spring.io/spring-boot/maven-plugin/packaging.html#packaging.layers), publicar em _registry_ e fazer o _deployment_
+com contêineres de banco de dados e da aplicação, para melhor portabilidade entre diferentes ambientes
 
 ## Material de Referência
 
