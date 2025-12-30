@@ -54,7 +54,10 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 # a imagem precise ser reconstruída novamente.
 
 # Na prática, isso é ineficiente, porque o código da aplicação muda com muito mais frequência do que
-# as dependências ou o próprio Spring Boot. Uma estratégia melhor é separar dependências e código da
-# aplicação em camadas diferentes. Assim, quando apenas o código muda, o Docker  reaproveita as
-# camadas antigas e precisa reconstruir apenas a parte final da imagem, tornando o build mais rápido
-# e eficiente.
+# as dependências ou o próprio Spring Boot.
+
+# Uma estratégia melhor é separar dependências e código da aplicação em camadas diferentes. Dessa
+# forma, o Docker aproveita as camadas de cache de forma mais eficiente, reconstruindo só aquilo
+# que realmente mudou. Isso melhora significativamente a performance dos builds. Assim, quando
+# apenas o código muda, o Docker reaproveita as camadas antigas e reconstrói apenas a
+# parte final da imagem, tornando o build mais rápido e eficiente
