@@ -1,4 +1,7 @@
 services:
+    # From the book "Spring Microservices in Action" (2nd Edition)
+    # Applies a label to each service launched. This becomes the DNS entry for the Docker instance
+    # when it starts, which is how other services access it.
     mysql:
         image: 'mysql:8.1'
         container_name: db
