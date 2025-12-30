@@ -56,6 +56,7 @@ Run a database container and point the app at it via environment variables.
 
 4) Check the Database Container Status
 - `docker logs db` to check the database logs
+- `docker compose logs -f --tail=0 db` (optional, if using Docker Compose) to follow only new DB logs — Prints out log messages from all containers. `-f` means the command will not complete and instead waits for new log messages. `--tail=0` means we don’t want to see previous log messages, only new ones.
 
 5) Wait 10–20 seconds for the DB to initialize, then start the app:
     ```bash
@@ -71,6 +72,7 @@ Run a database container and point the app at it via environment variables.
 
 6) Check the App Container Status
 - `docker logs bookstore-app` to check the app logs
+- `docker compose logs -f --tail=0 bookstore-app` (optional, if using Docker Compose) to follow only new app logs — Prints out log messages from all containers. `-f` means the command will not complete and instead waits for new log messages. `--tail=0` means we don’t want to see previous log messages, only new ones.
 - `docker ps -a` to check the running containers
 
 7) Open the app:
