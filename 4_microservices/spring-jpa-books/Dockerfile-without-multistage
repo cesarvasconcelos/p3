@@ -61,3 +61,21 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 # que realmente mudou. Isso melhora significativamente a performance dos builds. Assim, quando
 # apenas o código muda, o Docker reaproveita as camadas antigas e reconstrói apenas a
 # parte final da imagem, tornando o build mais rápido e eficiente
+
+
+# Esta abordagem é recomendada pela literatura e é a mais comum em projetos Spring Boot.
+# Veja o que diz o livro Microservices with Spring Boot and Spring Cloud: Build resilient and
+# scalable microservices using Spring Cloud, Istio, and Kubernetes 3rd(https://a.co/d/cqN3OjX)
+# - The fat JAR file takes time to unpackage when the Docker container starts up. A better approach
+#   is to instead unpackage the fat JAR file when the Docker image is built.
+# - The fat JAR file is very big, as we will see shortly, some 20 MB. If we want to make repeatable
+#   changes to the application code in the Docker images during development, this will result in
+#   suboptimal usage of the Docker build command. Since Docker images are built in layers, we will
+#   get one very big layer that needs to be replaced each time, even in the case where only a single
+#   Java class is changed in the application code.
+# - A better approach is to divide the content into different layers, where files that do not change
+#   so frequently are added in the first layer, and files that change the most are placed in the
+#   last layer. This will result in good use of Docker’s caching mechanism for layers. For the first
+#   stable layers that are not changed when some application code is changed, Docker will simply use
+#   the cache instead of rebuilding them. This will result in faster builds of the microservices’
+#   Docker images.
