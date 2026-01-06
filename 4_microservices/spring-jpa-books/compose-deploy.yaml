@@ -1,7 +1,10 @@
 services:
     # From the book "Spring Microservices in Action" (2nd Edition)
-    # Applies a label to each service launched. This becomes the DNS entry for the Docker instance
-    # when it starts, which is how other services access it.
+    # "Applies a label to each service launched. This becomes the DNS entry for the Docker instance
+    # when it starts, which is how other services access it.""
+    # From the book "Microservices with Spring Boot and Spring Cloud (Magnus Larsson, 4th Edition)
+    # "The name of the microservice. This will also be the hostname of the container in the internal
+    # Docker network."
     mysql:
         image: 'mysql:8.1'
         container_name: db
