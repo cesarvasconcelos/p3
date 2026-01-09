@@ -23,6 +23,7 @@ programação.
 - Persistência em banco de dados usando [Spring Data JDBC](https://spring.io/projects/spring-data-jdbc)/[JPA](https://spring.io/projects/spring-data-jpa), [MySQL](https://dev.mysql.com/doc/)/[MariaDB](https://mariadb.org/), [Flyway](https://flywaydb.org/)
 - Como utilizar ORM Frameworks (e.g., [Hibernate](https://hibernate.org/orm/))
 - Setup do desenvolvimento local com [Docker](https://docs.docker.com/), [Docker Compose](https://docs.docker.com/compose/), [Testcontainers](https://testcontainers.com/)
+- Como executar o banco de dados em um contêiner Docker
 - Usar o [JUnit](https://junit.org/), [AssertJ](https://assertj.github.io/doc/),  [Mockito](https://site.mockito.org/) para testes
 - Empacotar a aplicação Spring Boot (JAR), construir [imagens Docker eficientes](https://docs.spring.io/spring-boot/reference/packaging/container-images/efficient-images.html) usando [Dockerfiles](https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html)
 e boas práticas de [empacotamento em camadas](https://docs.spring.io/spring-boot/maven-plugin/packaging.html#packaging.layers), publicar em _registry_ e fazer o _deployment_
@@ -30,8 +31,7 @@ com contêineres de banco de dados e da aplicação, para melhor portabilidade e
 
 ## Material de Referência
 
-Os principais materiais de estudo usados na disciplina são os seguintes livros: [Spring Start
-Here](https://www.manning.com/books/spring-start-here) e [Use a Cabeça! HTML e CSS](https://www.amazon.com.br/Use-Cabe%C3%A7a-HTML-Eric-Freeman/dp/8576088622).
+Os principais materiais de estudo usados na disciplina são os seguintes livros: [Spring Start Here](https://www.manning.com/books/spring-start-here) e [Use a Cabeça! HTML e CSS](https://www.amazon.com.br/Use-Cabe%C3%A7a-HTML-Eric-Freeman/dp/8576088622).
 Outras fontes de leitura serão indicadas pelo professor.
 
 As documentações oficiais:
@@ -45,8 +45,7 @@ As documentações oficiais:
 
 Outros links:
 
-- [Spring initializr](https://start.spring.io/) para gerar projetos. Alternativamente, pode-se usar
-  **Spring Boot CLI** e o comando `spring init` via linha de comando (instalável via [SDKMAN](https://docs.spring.io/spring-boot/3.5/installing.html#getting-started.installing.cli.sdkman)) com parâmetros, por exemplo:
+- [Spring initializr](https://start.spring.io/) para gerar projetos. Alternativamente, pode-se usar **Spring Boot CLI** e o comando `spring init` via linha de comando (instalável via [SDKMAN](https://docs.spring.io/spring-boot/3.5/installing.html#getting-started.installing.cli.sdkman)) com parâmetros, por exemplo:
   ```bash
   spring init \
   --name=my-web-app \
@@ -62,14 +61,12 @@ Outros links:
   my-web-app
   ```
 
-**Nota**: Se você quiser aprender mais sobre o comando *spring init* da CLI, você pode executar o
-comando `spring help init`. Para ver quais dependências podem ser adicionadas, execute o comando
-`spring init --list`.
+**Nota**: Se você quiser aprender mais sobre o comando *spring init* da CLI, você pode executar o comando `spring help init`. Para ver quais dependências podem ser adicionadas, execute o comando `spring init --list`.
 
 ## Suporte ferramental básico
 
 - Um navegador (Firefox, Brave, Google Chrome, Opera, Safari, etc.)
-- Uma distribuição OpenJDK (e.g., [Amazon Correto](https://aws.amazon.com/corretto/)) - pode ser instalada via [SDKMAN](https://sdkman.io/)
+- Uma distribuição OpenJDK (e.g., [Amazon Correto](https://aws.amazon.com/corretto/)) - pode ser instalada via [SDKMAN](https://sdkman.io/jdks/)
 - [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 - [Apache Maven](https://maven.apache.org/)
 - [Docker Desktop](https://docs.docker.com/get-started/get-docker/)
