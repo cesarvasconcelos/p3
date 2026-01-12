@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 // @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // Use real database (Testcontainers)
 @DisplayName( "Test class User/Role Repository with Authentication using a sliced @DataJpaTest" )
 @DataJpaTest // Enables Spring Data JPA testing (rolls back transactions after each test)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // Do not use an embedded database (H2, HSQLDB, Derby) if it's on the classpath
 @Import({PasswordEncoderConfig.class, TestcontainersConfiguration.class})
 @ActiveProfiles("test") // Activate the "test" profile, $mvn clean test -Dspring.profiles.active=test
 @Sql(scripts = "classpath:/sql/create-test-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)

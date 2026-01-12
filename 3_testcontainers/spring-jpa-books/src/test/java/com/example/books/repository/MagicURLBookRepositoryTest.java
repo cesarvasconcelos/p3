@@ -4,6 +4,7 @@ import com.example.books.TestcontainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @DisplayName("Test class for BookRepository CRUD Operations with Magic Url and sliced @DataJpaTest")
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // Do not use an embedded database (H2, HSQLDB, Derby) if it's on the classpath
 @ActiveProfiles( "test" ) // Activate the "test" profile, $mvn clean test -Dspring.profiles.active=test
 @TestPropertySource(properties = {
         // "spring.test.database.replace=none",
