@@ -1,0 +1,24 @@
+<!-- From Magnus Larsson book (https://a.co/d/cpr3FGn):
+By default, the log output from Testcontainers is rather extensive. A Logback configuration file can
+be placed in the src/test/resource folder to limit the amount of log output. Logback is a logging
+framework (http://logback.qos.ch), and it is included in microservices by using the
+spring-boot-starter-webflux dependency.
+For details, see https://www.testcontainers.org/supported_docker_environment/logging_config/
+-->
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="org.testcontainers" level="INFO"/>
+    <!-- The following logger can be used for containers logs since 1.18.0 -->
+    <logger name="tc" level="INFO"/>
+    <logger name="com.github.dockerjava" level="WARN"/>
+    <logger name="com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire" level="OFF"/>
+</configuration>
