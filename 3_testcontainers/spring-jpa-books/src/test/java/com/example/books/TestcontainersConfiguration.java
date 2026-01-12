@@ -25,6 +25,12 @@ public class TestcontainersConfiguration {
      *   `spring.datasource.username`, etc.
      * - Spring Boot detects the container and uses its connection properties
      *   for the datasource automatically.
+     *
+     * - From Magnus Larsson book (https://a.co/d/cpr3FGn): 'The @ServiceConnection annotation will auto-configure the
+     *   corresponding Spring connection properties. It will, for example, set the
+     *   spring.datasource.url, spring.datasource.username, and spring.datasource.password
+     *   properties based on the information from the database container using the getJdbcUrl(),
+     *   getUsername(), and getPassword() methods'
      */
     @Bean
     @ServiceConnection
