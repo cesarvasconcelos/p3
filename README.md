@@ -106,7 +106,7 @@ não é necessário fazer este processo. Apenas [instale o Docker Desktop](https
 3. Importe a imagem do Ubuntu (use TAB para autocompletar o caminho):
 
    ```powershell
-   wsl --import Ubuntu D:\Users\<sua-matrícula>\Ubuntu  D:\ubuntu-docker.tar
+   wsl --import Ubuntu D:\Users\<sua-matrícula>  D:\ubuntu-docker.tar
    ```
 
 4. Listar as distribuições instaladas:
@@ -130,4 +130,4 @@ não é necessário fazer este processo. Apenas [instale o Docker Desktop](https
 7. Faça a [integração do Docker com IntelliJ](https://www.jetbrains.com/help/idea/docker.html) conforme descrito na documentação oficial do IntelliJ.
 
 Observações:
-- Use aspas nos caminhos, se houver espaços.
+- Use aspas nos caminhos, somente se houver espaços.
