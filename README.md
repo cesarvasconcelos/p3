@@ -85,3 +85,49 @@ $ git clone https://github.com/cesarvasconcelos/p3.git
 ## Autor
 
 * **Prof. Dr. César Vasconcelos (cesarocha@ifpb.edu.br)** - [GitHub Page](https://github.com/cesarvasconcelos)
+
+## Para importar a imagem Ubuntu no WSL (Windows) no Laboratório do IFPB
+
+⚠️ Atenção: É necessário fazer este procedimento apenas uma vez, no laboratório do IFPB. Em casa,
+não é necessário fazer este processo. Apenas [instale o Docker Desktop](https://www.docker.com/get-started/) normalmente na sua máquina.
+
+### Importar imagem Ubuntu no WSL (Windows)
+
+- Pré-requisitos: WSL instalado (Windows 10/11) e o arquivo `D:\ubuntu-docker.tar` disponível.
+- Execute os comandos no PowerShell, dentro da pasta do seu usuário: `D:\Users\<sua-matrícula>`.
+
+1. Abra o PowerShell.
+2. Se necessário, navegue até a sua pasta de usuário:
+
+   ```powershell
+   cd D:\Users\<sua-matrícula>
+   ```
+
+3. Importe a imagem do Ubuntu (use TAB para autocompletar o caminho):
+
+   ```powershell
+   wsl --import Ubuntu D:\Users\<sua-matrícula>\Ubuntu  D:\ubuntu-docker.tar
+   ```
+
+4. Listar as distribuições instaladas:
+
+   ```powershell
+   wsl -l
+   ```
+
+5. Iniciar o Ubuntu:
+
+   ```powershell
+   wsl -d Ubuntu
+   ```
+
+6. Verificar se o Ubuntu possui o Docker:
+
+   ```powershell
+   docker version
+   ```
+
+7. Faça a [integração do Docker com IntelliJ](https://www.jetbrains.com/help/idea/docker.html) conforme descrito na documentação oficial do IntelliJ.
+
+Observações:
+- Use aspas nos caminhos, se houver espaços.
