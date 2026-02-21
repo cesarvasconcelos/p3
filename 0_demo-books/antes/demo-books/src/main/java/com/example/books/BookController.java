@@ -1,5 +1,9 @@
 package com.example.books;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
 @Controller
 public class BookController {
 
@@ -16,6 +20,7 @@ public class BookController {
     public String showAddBookHtmlForm()
     {
         // 1. Show the HTML form to add a book (add-book.html)
+        return "";
     }
 
     // POST http://localhost:8080/add-book
@@ -25,5 +30,6 @@ public class BookController {
         // 1. We need a Book class to create an object from the data submitted via the form.
         // 1. Save the book using the repository
         // 2. Redirect to the add-book.html and indicate success
+        return "";
     }
 }
