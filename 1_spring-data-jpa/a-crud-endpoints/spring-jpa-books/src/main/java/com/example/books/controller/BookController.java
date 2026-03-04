@@ -18,6 +18,12 @@ public class BookController {
 
     public BookController( BookService bookService ) {this.bookService = bookService;}
 
+    @GetMapping( "/" )
+    public String showIndexHtmlPage()
+    {
+        return "index";
+    }
+
     @GetMapping( "/books" )
     public String listBooks( Model model )
     {
