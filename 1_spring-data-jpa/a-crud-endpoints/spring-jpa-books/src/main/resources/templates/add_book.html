@@ -21,25 +21,25 @@
                 <!-- Book Title Field -->
                 <div class="mb-3">
                     <label class="form-label">Title</label>
-                    <input type="text" class="form-control"
-                           th:field="*{title}"
-                           th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : (${book.title != null} ? 'is-valid' : '')"
-                           required>
+                    <input type="text" class="form-control" th:field="*{title}"
+                        th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : (${book.title != null} ? 'is-valid' : '')"
+                        required>
                     <!-- Error message for invalid input -->
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
                     <!-- Valid feedback for correct input -->
-                    <div class="valid-feedback" th:unless="${#fields.hasErrors('title')}" th:if="${book.title != null}">Looks good!</div>
+                    <div class="valid-feedback" th:unless="${#fields.hasErrors('title')}" th:if="${book.title != null}">
+                        Looks good!</div>
                 </div>
                 <!-- Book Price Field -->
                 <div class="mb-3">
                     <label class="form-label">Price</label>
-                    <input type="number" step="0.01" class="form-control"
-                           th:field="*{price}"
-                           th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : (${book.price > 0} ? 'is-valid' : '')">
+                    <input type="number" step="0.01" class="form-control" th:field="*{price}"
+                        th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : (${book.price > 0} ? 'is-valid' : '')">
                     <!-- Error message for invalid input -->
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
                     <!-- Valid feedback for correct input -->
-                    <div class="valid-feedback" th:unless="${#fields.hasErrors('price')}" th:if="${book.price > 0}">Looks good!</div>
+                    <div class="valid-feedback" th:unless="${#fields.hasErrors('price')}" th:if="${book.price > 0}">
+                        Looks good!</div>
                 </div>
                 <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary">Save</button>
@@ -49,3 +49,23 @@
     </body>
 
 </html>
+<!--
+    Observação (Thymeleaf + Bootstrap):
+
+    a) Na linha com th:classappend do campo title, a expressão decide a borda da caixa:
+       Operador ternário: condição ? valor_se_verdadeiro : valor_se_falso
+       Primeira condição: se há erro no campo 'title' (#fields.hasErrors('title')),
+       adiciona 'is-invalid' (borda vermelha).
+       Segunda condição: se não há erro, mas o campo foi preenchido (${book.title != null}),
+       adiciona 'is-valid' (borda verde).
+       Caso contrário: não adiciona classe extra (campo neutro).
+
+    b) Já as duas divs finais (invalid-feedback e valid-feedback) controlam a pequena mensagem
+       exibida abaixo da caixa de texto:
+       - mensagem vermelha quando há erro de validação;
+       - mensagem verde quando não há erro e o campo está preenchido.
+
+    c) Se o usuário digitar apenas espaços em branco no campo title, a validação @NotBlank
+       considera esse valor inválido. Nesse caso, o title receberá 'is-invalid' (vermelho)
+       e a mensagem de erro será exibida.
+-->
