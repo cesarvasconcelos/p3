@@ -68,4 +68,17 @@
     c) Se o usuário digitar apenas espaços em branco no campo title, a validação @NotBlank
        considera esse valor inválido. Nesse caso, o title receberá 'is-invalid' (vermelho)
        e a mensagem de erro será exibida.
+
+    d) Resumo do campo price (validação numérica):
+       - type="number" + step="0.01": aceita números decimais (centavos), como 19.99.
+       - th:field="*{price}": faz o bind do input com o atributo price do objeto book.
+       - th:classappend no price usa ternário:
+         se há erro no price -> 'is-invalid' (vermelho);
+         se não há erro e ${book.price > 0} -> 'is-valid' (verde);
+         caso contrário -> campo neutro.
+       - Feedback abaixo do input:
+         invalid-feedback aparece com #fields.hasErrors('price') e mostra th:errors="*{price}";
+         valid-feedback aparece apenas sem erro e com preço > 0.
+       - No backend, o campo price usa @NotNull e @Positive:
+         vazio gera erro de obrigatório; zero/negativo gera erro de valor inválido.
 -->
