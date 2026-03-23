@@ -61,6 +61,12 @@ public class BookController {
     {
         if ( result.hasErrors() )
         {
+            // Dica: o parâmetro @ModelAttribute("book") instrui o Spring MVC a
+            // criar/preencher na chegada o objeto Book com os dados do formulário e disponibilizá-lo
+            // no Model com o nome "book", junto do BindingResult correspondente.
+            // Por isso, ao retornar "add_book" em caso de erro, o formulário já recebe
+            // os valores que foram digitados e as mensagens de validação sem precisar chamar
+            // model.addAttribute("book", book) manualmente neste método.
             return "add_book";
         }
         bookService.save( book );
