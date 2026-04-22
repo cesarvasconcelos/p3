@@ -15,6 +15,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Repository tests using sliced {@code @DataJpaTest} with the Testcontainers JDBC "magic URL".
  *
+ * How to run from the module directory (3_testcontainers/spring-jpa-books):
+ * <pre>
+ *   # Run the entire test class
+ *   ./mvnw -Dspring.profiles.active=test \
+ *     -Dtest=com.example.books.repository.MagicURLBookRepositoryTest \
+ *     test
+ *
+ *   # Run a single test method
+ *   ./mvnw -Dspring.profiles.active=test \
+ *     -Dtest="com.example.books.repository.MagicURLBookRepositoryTest#givenEmptyBookRepo_whenFindingAll_thenIsEmpty" \
+ *     test
+ * </pre>
+ *
  * Highlights:
  * - {@code @DataJpaTest}: boots only JPA components for fast, isolated tests; each test rolls back.
  * - {@code @ActiveProfiles("test")}: activates the test profile for consistent test configuration.
@@ -32,7 +45,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
         // "spring.test.database.replace=none",
         // "spring.flyway.enabled=false",
-        "spring.datasource.url=jdbc:tc:mysql:8.1:///mytestdb"
+        "spring.datasource.url=jdbc:tc:mysql:8.1:///mytestdb",
+        // ContainerDatabaseDriver understands magic jdbc:tc:... URLs and starts the container automatically.
+        // This must be set here (not in application-test.properties) because it only applies to the Magic URL approach.
+        "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver"
         // If you have an init script:
         // "spring.datasource.url=jdbc:tc:mysql:8.0.36:///databasename?TC_INITSCRIPT=classpath:/sql/init_mysql.sql"
 })
