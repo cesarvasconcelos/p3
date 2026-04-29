@@ -63,8 +63,10 @@ public class BookServiceTest {
 
         List<Book> result = bookService.findAll();
 
-        assertThat(result).hasSize(2);
-        assertThat(result).containsExactlyInAnyOrder(aBook(), anotherBook());
+        assertThat(result).as("findAll should return exactly 2 books when 2 are available").hasSize(2);
+        assertThat(result)
+                .as("findAll should return exactly 2 books regardless of order")
+                .containsExactlyInAnyOrder(aBook(), anotherBook());
         then(bookRepository).should(times(1)).findAll();
     }
 
@@ -76,7 +78,7 @@ public class BookServiceTest {
 
         List<Book> result = bookService.findAll();
 
-        assertThat(result).isEmpty();
+        assertThat(result).as("findAll should return an empty list when the repository has no books").isEmpty();
         then(bookRepository).should(times(1)).findAll();
     }
 
@@ -91,9 +93,9 @@ public class BookServiceTest {
 
         Book result = bookService.save(unsavedBook);
 
-        assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getTitle()).isEqualTo("Clean Code");
-        assertThat(result.getPrice()).isEqualByComparingTo("39.99");
+        assertThat(result.getId()).as("saved book should have a database-assigned PK ID").isEqualTo(1L);
+        assertThat(result.getTitle()).as("saved book title should match the original input").isEqualTo("Clean Code");
+        assertThat(result.getPrice()).as("saved book price should match the original input").isEqualByComparingTo("39.99");
         then(bookRepository).should().save(unsavedBook);
     }
 
@@ -122,8 +124,8 @@ public class BookServiceTest {
 
         Optional<Book> result = bookService.findById(1L);
 
-        assertThat(result).isPresent();
-        assertThat(result.get().getTitle()).isEqualTo("Clean Code");
+        assertThat(result).as("findById should return a non-empty Optional when the book exists").isPresent();
+        assertThat(result.get().getTitle()).as("returned book title should match the stored value").isEqualTo("Clean Code");
         then(bookRepository).should().findById(1L);
     }
 
@@ -135,7 +137,7 @@ public class BookServiceTest {
 
         Optional<Book> result = bookService.findById(99L);
 
-        assertThat(result).isEmpty();
+        assertThat(result).as("findById should return an empty Optional when no book matches the ID").isEmpty();
         then(bookRepository).should().findById(99L);
     }
 
@@ -153,8 +155,8 @@ public class BookServiceTest {
 
         bookService.updateBook(1L, updateData);
 
-        assertThat(managedBook.getTitle()).isEqualTo("Effective Java");
-        assertThat(managedBook.getPrice()).isEqualByComparingTo("49.99");
+        assertThat(managedBook.getTitle()).as("updateBook should overwrite the managed entity's title in-place").isEqualTo("Effective Java");
+        assertThat(managedBook.getPrice()).as("updateBook should overwrite the managed entity's price in-place").isEqualByComparingTo("49.99");
         // Sem save explícito — o dirty-checking cuida da persistência no commit da transação.
         then(bookRepository).should(never()).save(managedBook);
     }
