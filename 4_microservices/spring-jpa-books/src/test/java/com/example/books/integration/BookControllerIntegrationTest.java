@@ -37,6 +37,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * - Uses the Arrange-Act-Assert (AAA) testing style for clarity.
  * - MockMvcTester (Spring 6.2+) replaces MockMvc so that ALL assertions use AssertJ exclusively,
  *   eliminating the mixed assertion style and the need for "throws Exception" on every test method.
+ *
+ * Maven commands (educational):
+ * - Run all tests with the test profile:
+ *   mvn clean test -Dspring.profiles.active=test
+ * - Run one test class with the test profile:
+ *   mvn -Dtest=BookControllerIntegrationTest test -Dspring.profiles.active=test
+ * - Run one specific test method with the test profile:
+ *   mvn -Dtest=BookControllerIntegrationTest#givenAuthenticatedUser_whenPostBook_thenItIsSavedAndRedirects test -Dspring.profiles.active=test
  */
 @SpringBootTest
 @DisplayName("Test class for BookController endpoints - full integration tests")
