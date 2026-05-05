@@ -3,6 +3,7 @@ package com.example.books.integration;
 import com.example.books.TestcontainersConfiguration;
 import com.example.books.model.Book;
 import com.example.books.repository.BookRepository;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,13 +112,11 @@ public class BookControllerIntegrationTest {
     @DisplayName("GET /books/delete/{id} - Should delete book and redirect")
     void givenAuthenticatedUserAndExistingBook_whenDeleteById_thenItIsRemovedAndRedirects() {
         // Arrange: create and persist a book to delete in this test
-        Book book = new Book();
-        book.setTitle("Test Book");
-        book.setPrice(BigDecimal.valueOf(19.99));
-        book = bookRepository.save(book); // Persist to DB and get the generated ID
+        Book book = aBook("Test Book", 19.99);
+        Book saved = persistBook( book ); // Persist to DB and get the generated ID
 
         // Act: call the delete endpoint using the book's ID
-        var response = mockMvc.perform(get("/books/delete/{id}", book.getId()));
+        var response = mockMvc.perform(get("/books/delete/{id}", saved.getId()));
 
         // Assert: HTTP layer — controller redirects after deletion
         assertThat(response)
@@ -133,5 +132,61 @@ public class BookControllerIntegrationTest {
         assertThat(bookRepository.findById(book.getId()))
                 .as("Book should have been deleted from database but was not.")
                 .isEmpty();
+    }
+
+    @Test
+    @WithMockUser(username = "pedro", password = "abc", roles = { "ADMIN" }) // Simulate authenticated user
+    @DisplayName("POST /books/edit/{id} - Should update book data and redirect")
+    void givenAuthenticatedUserAndExistingBook_whenEdit_thenItIsUpdatedAndRedirects(){
+        // Arrange: create and persist a book to be edited in this test
+        Book book = aBook( "Old Book", 19.99 );
+        Book saved = persistBook( book ); // Persist to DB and get the generated ID
+
+        // Act: submit a form-like POST request to update the book's data.
+        // perform() returns MvcTestResult — no checked exception, no "throws Exception" needed.
+        var response = mockMvc.perform(
+                post("/books/edit/{id}", saved.getId())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED) // Mimics an HTML form submission
+                        .param("title", "New Book")
+                        .param("price", "39.99")
+                        .with(csrf()) // Include CSRF token (required when CSRF protection is enabled)
+        );
+
+        // Assert: HTTP layer — controller redirects after successful update.
+        // Both assertions use AssertJ, the same library used below for business assertions.
+        assertThat(response)
+                .as("Expected a 302 redirect after update.")
+                .hasStatus(HttpStatus.FOUND);
+
+        assertThat(response)
+                .redirectedUrl()
+                .as("Expected redirect to /books after update.")
+                .isEqualTo("/books");
+
+        // Assert: verify the book's data was updated in the database
+        assertThat(bookRepository.count())
+                .as("Expected exactly one book to be updated, but found a different count.")
+                .isEqualTo(1);
+
+        book = bookRepository.findAll().getFirst();
+        assertThat(book.getTitle())
+                .as("Expected the updated book to have title 'New Book', but it did not.")
+                .isEqualTo("New Book");
+
+        assertThat(book.getPrice().doubleValue())
+                .as("Expected the updated book to have price $39.99, but it did not.")
+                .isEqualTo(39.99D);
+    }
+
+    // Helper methods
+    private Book persistBook( Book book ){
+        return bookRepository.saveAndFlush( book );
+    }
+
+    private Book aBook(String title, double price){
+        Book book = new Book();
+        book.setTitle(title);
+        book.setPrice(BigDecimal.valueOf(price));
+        return book;
     }
 }
