@@ -141,6 +141,8 @@ hs_err_pid*
 replay_pid*
 
 CLAUDE.MD
+AGENTS.MD
+CLAUDE.LOCAL.MD
 .claude/
 docs/
 plan/
