@@ -18,6 +18,13 @@ docker compose up -d mysql
 
 ## Passo 2: executar a aplicação com `java -jar`
 
+Antes de executar, garanta que você está no diretório do projeto e que o JAR foi gerado:
+
+```bash
+cd ~/github/p3/4_microservices/spring-jpa-books
+./mvnw clean package -DskipTests
+```
+
 ```bash
 SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/db_bookstore \
 SPRING_DATASOURCE_USERNAME=root \
