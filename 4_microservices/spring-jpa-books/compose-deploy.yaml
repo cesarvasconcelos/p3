@@ -18,10 +18,24 @@ services:
         ports:
             - '3306:3306'
         healthcheck:
+            # Referencia do Compose: https://docs.docker.com/reference/compose-file/services/#healthcheck
+            # Referencia do Docker HEALTHCHECK: https://docs.docker.com/reference/dockerfile/#healthcheck
+            # `test` e o comando executado dentro do container do MySQL para verificar se o banco
+            # esta saudavel. Aqui, `mysqladmin ping -h localhost` testa se o servidor MySQL que
+            # esta rodando no proprio container esta respondendo as requisicoes.
             test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+            # `interval` = o Docker executa o health check periodicamente a cada 10 segundos
+            # enquanto o container estiver rodando.
             interval: 10s
+            # `timeout` = cada execucao do comando de health check pode levar no maximo 5
+            # segundos; se passar disso, aquela execucao conta como falha.
             timeout: 5s
+            # `retries` = o container so vira unhealthy depois de 3 falhas consecutivas do
+            # health check.
             retries: 3
+            # `start_period` = se estivesse configurado, daria um tempo inicial de tolerancia
+            # para o container terminar a inicializacao antes de o Docker considerar as falhas
+            # do health check na contagem de retries.
         networks:
             - bookstore-network
     bookstore-app:
