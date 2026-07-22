@@ -9,6 +9,13 @@ import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 
+// 1. We need a Book class to receive the book data from the form
+// and save it to the database.
+// The Book object has the following attributes:
+// id, title, price
+// Note: For persistence, this class also needs a way to bind its fields
+// to database columns so that the data can be stored and retrieved.
+
 @Entity
 @Table( name = "book" )
 public class Book {
