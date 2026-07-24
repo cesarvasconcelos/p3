@@ -4,11 +4,11 @@
      <modelVersion>4.0.0</modelVersion>
 
      <parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.16</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-parent</artifactId>
+          <version>4.1.0</version>
+          <relativePath/> <!-- lookup parent from repository -->
+     </parent>
      <groupId>com.example</groupId>
      <artifactId>spring-jpa-books</artifactId>
 
@@ -26,10 +26,14 @@
      </properties>
 
      <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+          <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-data-jpa</artifactId>
+          </dependency>
+          <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-flyway</artifactId>
+          </dependency>
           <dependency>
                <groupId>org.springframework.boot</groupId>
                <artifactId>spring-boot-starter-security</artifactId>
@@ -44,11 +48,7 @@
           </dependency>
           <dependency>
                <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-web</artifactId>
-          </dependency>
-          <dependency>
-               <groupId>org.flywaydb</groupId>
-               <artifactId>flyway-core</artifactId>
+               <artifactId>spring-boot-starter-webmvc</artifactId>
           </dependency>
           <dependency>
                <groupId>org.flywaydb</groupId>
@@ -58,7 +58,6 @@
                <groupId>org.thymeleaf.extras</groupId>
                <artifactId>thymeleaf-extras-springsecurity6</artifactId>
           </dependency>
-
           <dependency>
                <groupId>org.springframework.boot</groupId>
                <artifactId>spring-boot-docker-compose</artifactId>
@@ -72,7 +71,32 @@
           </dependency>
           <dependency>
                <groupId>org.springframework.boot</groupId>
-               <artifactId>spring-boot-starter-test</artifactId>
+               <artifactId>spring-boot-starter-data-jpa-test</artifactId>
+               <scope>test</scope>
+          </dependency>
+          <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-flyway-test</artifactId>
+               <scope>test</scope>
+          </dependency>
+          <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-security-test</artifactId>
+               <scope>test</scope>
+          </dependency>
+          <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-thymeleaf-test</artifactId>
+               <scope>test</scope>
+          </dependency>
+          <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-validation-test</artifactId>
+               <scope>test</scope>
+          </dependency>
+          <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-starter-webmvc-test</artifactId>
                <scope>test</scope>
           </dependency>
           <dependency>
@@ -81,22 +105,19 @@
                <scope>test</scope>
           </dependency>
           <dependency>
-               <groupId>org.springframework.security</groupId>
-               <artifactId>spring-security-test</artifactId>
+               <groupId>org.testcontainers</groupId>
+               <artifactId>testcontainers-junit-jupiter</artifactId>
                <scope>test</scope>
           </dependency>
           <dependency>
                <groupId>org.testcontainers</groupId>
-               <artifactId>junit-jupiter</artifactId>
+               <artifactId>testcontainers-mysql</artifactId>
                <scope>test</scope>
           </dependency>
           <dependency>
+               <!-- Contains @Suite, @SelectClasses, @SuiteDisplayName, etc -->
                <groupId>org.junit.platform</groupId>
-               <artifactId>junit-platform-suite-engine</artifactId>
-          </dependency>
-          <dependency>
-               <groupId>org.testcontainers</groupId>
-               <artifactId>mysql</artifactId>
+               <artifactId>junit-platform-suite</artifactId>
                <scope>test</scope>
           </dependency>
      </dependencies>
@@ -107,7 +128,7 @@
                <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
-                </plugin>
+               </plugin>
                <!-- Plugin for running unit tests -->
                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -118,8 +139,8 @@
                          <includes>
                               <include>**/com.example.books.AllTestsSuite.class</include>
                          </includes>
-                    <!--Se quiser Reportar no com.example.Clazz.txt os nomes dos @Test methods-->
-                    <!--https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#reportFormat-->
+                         <!--Se quiser Reportar no com.example.Clazz.txt os nomes dos @Test methods-->
+                         <!--https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#reportFormat-->
                          <reportFormat>plain</reportFormat>
                          <argLine>-Djdk.instrument.traceUsage=false -XX:+EnableDynamicAgentLoading</argLine>
                          <argLine>
