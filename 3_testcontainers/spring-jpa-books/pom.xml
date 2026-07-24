@@ -116,6 +116,9 @@
           </dependency>
           <dependency>
                <!-- Contains @Suite, @SelectClasses, @SuiteDisplayName, etc -->
+               <!-- Aggregate dependency: transitively pulls in junit-platform-suite-api (the
+                    annotations) and junit-platform-suite-engine (runs the suite), version
+                    managed by the Spring Boot BOM. -->
                <groupId>org.junit.platform</groupId>
                <artifactId>junit-platform-suite</artifactId>
                <scope>test</scope>
@@ -142,8 +145,11 @@
                          <!--Se quiser Reportar no com.example.Clazz.txt os nomes dos @Test methods-->
                          <!--https://maven.apache.org/surefire/maven-surefire-plugin/test-mojo.html#reportFormat-->
                          <reportFormat>plain</reportFormat>
-                         <argLine>-Djdk.instrument.traceUsage=false -XX:+EnableDynamicAgentLoading</argLine>
+                         <!-- A single <argLine> only: Maven does not merge duplicate <argLine>
+                              elements, the last one silently wins and replaces the others. -->
                          <argLine>
+                              -Djdk.instrument.traceUsage=false
+                              -XX:+EnableDynamicAgentLoading
                               -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
                               -Xshare:off
                          </argLine>
