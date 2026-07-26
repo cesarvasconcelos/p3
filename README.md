@@ -76,7 +76,7 @@ Outros links:
 
 ## Este repositório
 
-Pode-se obter apenas os [códigos](https://github.com/cesarvasconcelos/daweb1/archive/master.zip) ou, alternativamente, utilizar o [Git](https://git-scm.com/) para clonar todo o repositório funcional e seu histórico de versões:
+Pode-se obter apenas os códigos ou, alternativamente, utilizar o [Git](https://git-scm.com/) para clonar todo o repositório funcional e seu histórico de versões:
 
 ```
 $ git clone https://github.com/cesarvasconcelos/p3.git
@@ -88,7 +88,7 @@ $ git clone https://github.com/cesarvasconcelos/p3.git
 
 ## Para importar a imagem Ubuntu no WSL (Windows) no Laboratório do IFPB
 
-⚠️ Atenção: É necessário fazer este procedimento apenas uma vez, no laboratório do IFPB. Em casa,
+⚠️ Atenção: É necessário fazer este procedimento só uma vez, no laboratório do IFPB. Em casa,
 não é necessário fazer este processo. Apenas [instale o Docker Desktop](https://www.docker.com/get-started/) normalmente na sua máquina.
 
 ### Importar imagem Ubuntu no WSL (Windows)
