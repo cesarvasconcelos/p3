@@ -6,7 +6,7 @@ services:
     # "The name of the microservice. This will also be the hostname of the container in the internal
     # Docker network."
     mysql:
-        image: 'mysql:8.1'
+        image: 'mysql:8.4'
         container_name: db
         volumes:
             - vol_books:/var/lib/mysql

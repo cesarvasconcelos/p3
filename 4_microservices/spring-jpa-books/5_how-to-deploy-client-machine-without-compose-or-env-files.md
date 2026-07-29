@@ -49,7 +49,7 @@ Run a database container and point the app at it via environment variables.
         -e MYSQL_PASSWORD=cesar123 \
         -p 3306:3306 \
         -v vol_bookstore:/var/lib/mysql \
-        mysql:8.1
+        mysql:8.4
     ```
     To run the database container. This command will download the image if it's not already available on the client machine.
 
@@ -126,7 +126,7 @@ docker network create --driver=bridge bookstore-network
 Copy-paste ready:
 
 ```bash
-# Run a MySQL 8.1 container:
+# Run a MySQL 8.4 container:
 # - attaches to 'bookstore-network' so the app can reach it by the host name 'db'
 # - publishes port 3306 for local tools (optional; remove if you don't need host access)
 # - mounts 'vol_bookstore' to persist data across container restarts
@@ -136,7 +136,7 @@ docker run -d --name db \
   -p 3306:3306 \
   -v vol_bookstore:/var/lib/mysql \
   --env-file ./db.env \
-  mysql:8.1
+  mysql:8.4
 ```
 ```diff
 # Note: instead of using individual -e flags, use a single env-file

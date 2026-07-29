@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * - {@code @DataJpaTest}: boots only JPA components for fast, isolated tests; each test rolls back.
  * - {@code @ActiveProfiles("test")}: activates the test profile for consistent test configuration.
  * - {@code @TestPropertySource}: sets the datasource URL to the Testcontainers magic URL
- *   {@code jdbc:tc:mysql:8.1:///mytestdb}, which automatically starts a MySQL container
+ *   {@code jdbc:tc:mysql:8.4:///mytestdb}, which automatically starts a MySQL container
  *   and wires a datasource without manual properties.
  * - {@code @Sql}: prepares and cleans the schema/data around each test for determinism.
  *
@@ -47,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
         // "spring.test.database.replace=none",
         // "spring.flyway.enabled=false",
-        "spring.datasource.url=jdbc:tc:mysql:8.1:///mytestdb",
+        "spring.datasource.url=jdbc:tc:mysql:8.4:///mytestdb",
         // ContainerDatabaseDriver understands magic jdbc:tc:... URLs and starts the container automatically.
         // This must be set here (not in application-test.properties) because it only applies to the Magic URL approach.
         "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver"

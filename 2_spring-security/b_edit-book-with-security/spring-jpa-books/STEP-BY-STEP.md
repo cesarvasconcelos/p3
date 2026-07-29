@@ -108,7 +108,7 @@ Create a `compose.yaml` file in the root directory:
 ```yaml
 services:
     mysql:
-        image: 'mysql:8.1'
+        image: 'mysql:8.4'
         container_name: db
         volumes:
             - vol_bookstore:/var/lib/mysql

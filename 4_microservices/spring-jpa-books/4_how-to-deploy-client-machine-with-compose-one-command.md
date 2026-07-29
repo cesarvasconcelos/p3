@@ -5,7 +5,7 @@ No cliente Linux, crie um arquivo `compose.yaml` com o conteúdo abaixo:
 ```yaml
 services:
   db:
-    image: mysql:8.1
+    image: mysql:8.4
     container_name: db
     restart: unless-stopped
     environment:
