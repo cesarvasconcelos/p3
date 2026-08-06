@@ -22,6 +22,7 @@ programação.
 - Construir REST APIs e Aplicações Web com [Spring MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html), [Thymeleaf](https://www.thymeleaf.org/), [Bootstrap CSS](https://getbootstrap.com/)
 - Persistência em banco de dados usando [Spring Data JDBC](https://spring.io/projects/spring-data-jdbc)/[JPA](https://spring.io/projects/spring-data-jpa), [MySQL](https://dev.mysql.com/doc/)/[MariaDB](https://mariadb.org/), [Flyway](https://flywaydb.org/)
 - Como utilizar ORM Frameworks (e.g., [Hibernate](https://hibernate.org/orm/))
+- Discutir os principais conceitos da [Jakarta Persistence API (JPA)](https://github.com/jakartaee/persistence)
 - Setup do desenvolvimento local com [Docker](https://docs.docker.com/), [Docker Compose](https://docs.docker.com/compose/), [Testcontainers](https://testcontainers.com/)
 - Como executar o banco de dados em um contêiner Docker
 - Usar o [JUnit](https://junit.org/), [AssertJ](https://assertj.github.io/doc/),  [Mockito](https://site.mockito.org/) para testes
