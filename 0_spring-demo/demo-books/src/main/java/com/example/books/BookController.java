@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 // 2. Save the book to the database when a POST request is made to http://localhost:8080/add-book
 //    2.1 Redirect to the add-book form indicating success
 
-// BookRepository is used by BookController to save the book to the database,
+// BookService is used by BookController to save the book to the database,
 // so it must be injected into the controller
 
 @Controller
 public class BookController {
-    private final BookRepository repository;
+    private final BookService service;
 
-    public BookController( BookRepository repository ) {this.repository = repository;}
+    public BookController( BookService service ) {this.service = service;}
 
     // GET http://localhost:8080/
     // 1. Show the HTML form to add a book (add-book.html)
@@ -31,12 +31,12 @@ public class BookController {
 
     // POST http://localhost:8080/add-book
     // 1. We need a Book class to create an object from the data submitted via the form.
-    // 2. Save the book using the repository
+    // 2. Save the book using the service
     // 3. Redirect to the add-book.html and indicate success
     @PostMapping( "/add-book" )
     public String saveBook( Book book )
     {
-        repository.save( book );
+        service.save( book );
         return "redirect:/?success";
     }
 }
