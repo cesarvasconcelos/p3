@@ -40,6 +40,7 @@ As documentações oficiais:
 - [Spring Website](https://spring.io/)
 - [Spring Projects](https://spring.io/projects)
 - [Spring Framework Javadoc API](https://docs.spring.io/spring-framework/docs/current/javadoc-api/)
+- [Spring Data JPA Javadoc API](https://docs.spring.io/spring-data/jpa/docs/current/api/index.html)
 - [HTML Reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference)
 - [CSS Reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference)
 - [Thymeleaf](https://www.thymeleaf.org/)
