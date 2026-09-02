@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
     <head>
         <meta charset="UTF-8">
         <title>Edit Book</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-              rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
+
     <body>
 
         <div class="container mt-5">
@@ -17,31 +18,31 @@
                     Please fix the errors below and try again.
                 </div>
 
-                <input th:field="*{id}" type="hidden"/>  <!-- Keep ID hidden (not editable) -->
+                <input th:field="*{id}" type="hidden" /> <!-- Keep ID hidden (not editable) -->
 
                 <!-- Title Input -->
                 <div class="mb-3">
                     <label class="form-label">Title</label>
-                    <input type="text" class="form-control"
-                           th:field="*{title}"
-                           th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : (${book.title != null and !book.title.isBlank()} ? 'is-valid' : '')"
-                           required>
+                    <input type="text" class="form-control" th:field="*{title}"
+                        th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : (${book.title != null and !book.title.isBlank()} ? 'is-valid' : '')"
+                        required>
                     <!-- Error message for invalid input -->
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
                     <!-- Valid feedback when there are no errors and the field is filled -->
-                    <div class="valid-feedback" th:if="${not #fields.hasErrors('title') and book.title != null}">Looks good!</div>
+                    <div class="valid-feedback" th:if="${not #fields.hasErrors('title') and book.title != null}">Looks
+                        good!</div>
                 </div>
 
                 <!-- Price Input -->
                 <div class="mb-3">
                     <label class="form-label">Price</label>
-                    <input type="number" step="0.01" class="form-control"
-                           th:field="*{price}"
-                           th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : (${book.price > 0} ? 'is-valid' : '')">
+                    <input type="number" step="0.01" class="form-control" th:field="*{price}"
+                        th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : (${book.price > 0} ? 'is-valid' : '')">
                     <!-- Error message for invalid input -->
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
                     <!-- Valid feedback for correct input -->
-                    <div class="valid-feedback" th:unless="${#fields.hasErrors('price')}" th:if="${book.price > 0}">Looks good!</div>
+                    <div class="valid-feedback" th:unless="${#fields.hasErrors('price')}" th:if="${book.price > 0}">
+                        Looks good!</div>
                 </div>
 
                 <!-- Submit Button -->
@@ -49,6 +50,9 @@
                 <a class="btn btn-danger" th:href="@{/books}">Cancel</a>
             </form>
         </div>
-
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
     </body>
+
 </html>
