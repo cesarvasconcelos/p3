@@ -33,10 +33,23 @@ public class BookController {
         return "books";
     }
 
+    // Este método vai ser invocado antes ao invocar qualquer endpoint
+    // Para fins didáticos: neste exemplo específico, talvez nem precisasse de @ModelAttribute
+    // pois apenas os endpoints showAddForm() e addBook() se beneficiam desta instância do Book
+    // adicionada ao modelo. Os endpoints listBooks() e deleteBook() não utilizam este objeto.
+    // Porém, se houvesse múltiplos endpoints que necessitassem de um objeto Book no modelo,
+    // faria mais sentido usar @ModelAttribute para evitar repetição de código.
+    //
+    // QUANDO então um método marcado com @ModelAttribute seria útil?
+    // - Quando múltiplos endpoints precisam do mesmo objeto no modelo (ex: formulários de edição e visualização)
+    // - Para inicializar objetos com valores padrão passados para todas as views
+    // - Para carregar dados compartilhados (ex: listas de categorias de livros, ...) que
+    //   são usados em vários endpoints diferentes
+    // - Para evitar duplicação de código quando o mesmo objeto é usado em diferentes views
     @ModelAttribute( "book" )
-    private Book bindBookObjectToHtmlForm()
+    private Book prepareBookForModel()
     {
-        return new Book(); // Initialize an empty Book "COMMAND OBJECT"
+        return new Book(); // Initialize an empty Book "COMMAND OBJECT" to be used in forms
     }
 
     @GetMapping( "/books/add" )
@@ -46,10 +59,16 @@ public class BookController {
     }
 
     @PostMapping( "/books/add" )
-    public String addBook( @Valid @ModelAttribute Book book, BindingResult result )
+    public String addBook( @Valid @ModelAttribute( "book" ) Book book, BindingResult result )
     {
         if ( result.hasErrors() )
         {
+            // Dica: o parâmetro @ModelAttribute("book") instrui o Spring MVC a
+            // criar/preencher na chegada o objeto Book com os dados do formulário e disponibilizá-lo
+            // no Model com o nome "book", junto do BindingResult correspondente.
+            // Por isso, ao retornar "add_book" em caso de erro, o formulário já recebe
+            // os valores que foram digitados e as mensagens de validação sem precisar chamar
+            // model.addAttribute("book", book) manualmente neste método.
             return "add_book";
         }
         bookService.save( book );
