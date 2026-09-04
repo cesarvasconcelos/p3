@@ -104,6 +104,9 @@ public class BookController {
                              @Valid @ModelAttribute("book") Book book,
                              BindingResult result) {
         if (result.hasErrors()) {
+            // É o próprio Spring quem publica o "book" no Model automaticamente, antes
+            // do método rodar; por isso não precisamos chamar model.addAttribute aqui
+            // ao retornar "edit_book" em caso de erro.
             return "edit_book";
         }
 
