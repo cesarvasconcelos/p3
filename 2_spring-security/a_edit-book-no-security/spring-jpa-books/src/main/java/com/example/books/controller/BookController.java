@@ -60,14 +60,13 @@ public class BookController {
         return "add_book";
     }
 
-    // Atenção: BindingResult precisa vir IMEDIATAMENTE após o parâmetro @Valid.
-    // Se outro parâmetro for inserido entre os dois, o Spring não associa o BindingResult
-    // ao Book e lança HandlerMethodValidationException (HTTP 400) em vez de chamar este método.
-    //
-    // O nome "book" na anotação é redundante aqui (sairia o mesmo por convenção, a
-    // partir do tipo Book), mas escrevê-lo explicitamente deixa claro pra quem lê o
-    // código qual chave a view espera, e evita quebra silenciosa se a classe Book
-    // for renomeada no futuro.
+    // "book" viria por convenção do tipo Book (a classe e não o nome do parâmetro),
+    // mesmo sem @ModelAttribute("book") explícito. Aqui escrevemos o nome mesmo sendo
+    // redundante: fica claro pra quem lê qual chave a view espera, e evita quebra
+    // silenciosa se a classe Book for renomeada no futuro.
+    // O BindingResult também precisa vir IMEDIATAMENTE após o parâmetro @Valid, senão
+    // o Spring nem chama este método em caso de erro (HandlerMethodValidationException
+    // → HTTP 400).
     @PostMapping( "/books/add" )
     public String addBook( @Valid @ModelAttribute( "book" ) Book book, BindingResult result )
     {
