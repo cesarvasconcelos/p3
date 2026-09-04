@@ -31,10 +31,12 @@ public class BookController {
         return "books";
     }
 
-    // Este método vai ser invocado antes ao invocar qualquer endpoint
-    // Para fins didáticos: neste exemplo específico, talvez nem precisasse de @ModelAttribute
-    // pois apenas os endpoints showAddForm() e addBook() se beneficiam desta instância do Book
-    // adicionada ao modelo. Os endpoints listBooks() e deleteBook() não utilizam este objeto.
+    // Este método é invocado antes de QUALQUER endpoint desta classe, e o retorno
+    // entra no Model sob a chave "book". Para fins didáticos: neste exemplo específico,
+    // talvez nem precisasse de @ModelAttribute, pois apenas showAddForm() e addBook()
+    // se beneficiam desta instância ser adicionada ao Model antes deles rodarem.
+    // listBooks() e deleteBook() não usam este "book", mas o método roda mesmo
+    // assim em toda requisição atendida por este controller.
     // Porém, se houvesse múltiplos endpoints que necessitassem de um objeto Book no modelo,
     // faria mais sentido usar @ModelAttribute para evitar repetição de código.
     //
@@ -56,13 +58,22 @@ public class BookController {
         return "add_book";
     }
 
+    // Atenção: BindingResult precisa vir IMEDIATAMENTE após o parâmetro @Valid.
+    // Se outro parâmetro for inserido entre os dois, o Spring não associa o BindingResult
+    // ao Book e lança HandlerMethodValidationException (HTTP 400) em vez de chamar este método.
+    //
+    // O nome "book" na anotação é redundante aqui (sairia o mesmo por convenção, a
+    // partir do tipo Book), mas escrevê-lo explicitamente deixa claro pra quem lê o
+    // código qual chave a view espera, e evita quebra silenciosa se a classe Book
+    // for renomeada no futuro.
     @PostMapping( "/books/add" )
     public String addBook( @Valid @ModelAttribute( "book" ) Book book, BindingResult result )
     {
         if ( result.hasErrors() )
         {
-            // Dica: o parâmetro @ModelAttribute("book") instrui o Spring MVC a
-            // criar/preencher na chegada o objeto Book com os dados do formulário e disponibilizá-lo
+            // Dica: o parâmetro @ModelAttribute("book") faz o Spring MVC reaproveitar o
+            // objeto Book que prepareBookForModel() já colocou no Model (não cria um novo)
+            // e preencher seus campos com os dados do formulário, publicando o resultado
             // no Model com o nome "book", junto do BindingResult correspondente.
             // Por isso, ao retornar "add_book" em caso de erro, o formulário já recebe
             // os valores que foram digitados e as mensagens de validação sem precisar chamar
