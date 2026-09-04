@@ -36,6 +36,10 @@ public class BookController {
         return "books";
     }
 
+    // Roda antes de QUALQUER endpoint desta classe; o retorno entra no Model como "book".
+    // Útil quando o mesmo objeto/dado é necessário em vários endpoints (evita repetir
+    // model.addAttribute em cada um); aqui, quem se beneficia de fato desta instância
+    // ser adicionada ao Model é showAddForm()/addBook().
     @ModelAttribute( "book" )
     private Book bindBookToHtmlForm()
     {
@@ -48,11 +52,23 @@ public class BookController {
         return "add_book";
     }
 
+    // "book" abaixo vem por convenção do tipo Book (a classe e não o nome do parâmetro), mesmo
+    // sem @ModelAttribute("book") explícito. Funciona, mas a prática recomendada é
+    // escrever o nome mesmo quando redundante, como faz o updateBook mais abaixo:
+    // fica claro pra quem lê qual chave a view espera, e evita quebra silenciosa se
+    // a classe Book for renomeada no futuro.
+    // O BindingResult também precisa vir IMEDIATAMENTE após o parâmetro @Valid, senão
+    // o Spring nem chama este método em caso de erro (HandlerMethodValidationException
+    // → HTTP 400).
     @PostMapping( "/books/add" )
     public String addBook( @Valid @ModelAttribute Book book, BindingResult result )
     {
         if ( result.hasErrors() )
         {
+            // O Spring já colocou "book" (reaproveitando o que bindBookToHtmlForm() criou,
+            // agora com os dados digitados) e o BindingResult no Model antes desta linha
+            // rodar; por isso o formulário volta preenchido sem precisarmos chamar
+            // model.addAttribute aqui.
             return "add_book";
         }
         bookService.save( book );
@@ -68,6 +84,9 @@ public class BookController {
     }
 
     // Display edit book form
+    // Aqui SOMOS nós que colocamos "book" no Model (GET), o oposto do POST abaixo,
+    // onde é o próprio Spring quem publica o "book" no Model automaticamente, antes
+    // do método rodar.
     @GetMapping("/books/edit/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model)
     {
@@ -79,6 +98,7 @@ public class BookController {
         return "redirect:/books"; // Redirect if book not found
     }
 
+    // Mesma regra de ordem do addBook: BindingResult logo após o parâmetro @Valid.
     @PostMapping("/books/edit/{id}")
     public String updateBook(@PathVariable("id") Long id,
                              @Valid @ModelAttribute("book") Book book,
@@ -87,6 +107,10 @@ public class BookController {
             return "edit_book";
         }
 
+        // O "book" aqui foi preenchido só com os campos que o formulário enviou,
+        // e não com os dados do banco; o id só chegou porque edit_book.html tem um
+        // <input type="hidden" th:field="*{id}">. Por isso delegamos ao service, que
+        // busca a entidade original pelo id e altera (ou modifica) apenas title/price.
         // Delegate the update logic to the service layer (better separation of concerns)
         bookService.updateBook(id, book.getTitle(), book.getPrice());
         return "redirect:/books"; // Redirect after updating
