@@ -23,6 +23,20 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    // Sem este método a raiz "/" continuaria funcionando: como existe
+    // templates/index.html e o Thymeleaf está no classpath, o próprio Spring Boot
+    // registra um WelcomePageHandlerMapping apontando para a view "index"
+    // (procure "Adding welcome page template: index" no log de inicialização).
+    // Mapear "/" explicitamente deixa a rota visível para quem lê o controller;
+    // ela vence o welcome page por ter ordem menor (RequestMappingHandlerMapping = 0,
+    // WelcomePageHandlerMapping = 2). Em ambos os casos "/" passa pela cadeia de
+    // filtros do Spring Security — por isso ela está em permitAll() no SecurityConfig.
+    @GetMapping( "/" )
+    public String showIndexHtmlPage()
+    {
+        return "index";
+    }
+
     @GetMapping( "/login" )
     public String login()
     {
