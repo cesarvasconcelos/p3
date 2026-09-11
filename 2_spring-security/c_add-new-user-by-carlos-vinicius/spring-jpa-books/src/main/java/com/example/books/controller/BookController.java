@@ -27,6 +27,14 @@ public class BookController {
         this.userService = userService;
     }
 
+    // Mapeia a raiz explicitamente; sem este método o próprio Spring Boot serviria
+    // templates/index.html pelo WelcomePageHandlerMapping (welcome page automática).
+    @GetMapping( "/" )
+    public String showIndexHtmlPage()
+    {
+        return "index";
+    }
+
     @GetMapping( "/login" )
     public String login()
     {
