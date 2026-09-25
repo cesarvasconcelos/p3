@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.testcontainers.mysql.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.Map;
+
 /**
  * Test-specific configuration that provides a MySQL Testcontainer.
  *
@@ -35,7 +37,10 @@ public class TestcontainersConfiguration {
     @Bean
     @ServiceConnection
     MySQLContainer mysqlContainer() {
-        return new MySQLContainer( DockerImageName.parse( "mysql:8.4" ));
+        return new MySQLContainer( DockerImageName.parse( "mysql:8.4" ))
+                // Keeps MySQL data in RAM (tmpfs): avoids slow disk fsync during initialization.
+                // Test data is disposable anyway, so there is no need to persist it on disk.
+                .withTmpFs( Map.of( "/var/lib/mysql", "rw" ));
         // .withDatabaseName("db_bookstore");
         // .withPassword("secret");
     }

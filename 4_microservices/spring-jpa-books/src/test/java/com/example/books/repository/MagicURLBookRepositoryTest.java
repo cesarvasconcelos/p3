@@ -46,7 +46,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
         // "spring.test.database.replace=none",
         // "spring.flyway.enabled=false",
-        "spring.datasource.url=jdbc:tc:mysql:8.4:///mytestdb",
+        // TC_TMPFS keeps MySQL data in RAM (tmpfs), avoiding slow disk fsync during initialization.
+        "spring.datasource.url=jdbc:tc:mysql:8.4:///mytestdb?TC_TMPFS=/var/lib/mysql:rw",
         // ContainerDatabaseDriver understands magic jdbc:tc:... URLs and starts the container automatically.
         // This must be set here (not in application-test.properties) because it only applies to the Magic URL approach.
         "spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver"
