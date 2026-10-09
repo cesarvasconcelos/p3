@@ -1,34 +1,34 @@
-# IFPB - Programação III
+# IFPB: Programação III
 
-Instituto Federal de Educação, Ciência e Tecnologia da Paraíba - IFPB - *Campus*
-CG  / PB
+Instituto Federal de Educação, Ciência e Tecnologia da Paraíba (IFPB), *Campus*
+CG / PB
 
 **Disciplina**: Programação III.
 
 Neste repositório, encontram-se exemplos de código utilizados em sala de aula.
 Os códigos não devem ser usados como único material de referência para estudo.
-Há trechos de códigos incompletos, com erros e/ou outros problemas de
+Há trechos de código incompletos, com erros e/ou outros problemas de
 implementação, os quais devem ser analisados pelo aluno como exercício de
 programação.
 
 ## Objetivos de aprendizado
 
-- Como projetar e implementar aplicações Web coorporativas usando framework [Spring](https://spring.io/projects/spring-framework)
-- Implementar o front-end e back-end de uma aplicação Web típica
+- Como projetar e implementar aplicações Web corporativas usando o ecossistema [Spring](https://spring.io/projects)
+- Implementar o front-end e o back-end de uma aplicação Web típica
 - Operações CRUD, submissão de formulários HTML, validação e integração com banco de dados
-- Spring ecossistema: [Spring Web MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html), [Spring Integration](https://spring.io/projects/spring-integration), [Spring Testing](https://docs.spring.io/spring-framework/reference/testing.html), [Spring Boot](https://spring.io/projects/spring-boot), [Spring Data JPA](https://spring.io/projects/spring-data-jpa), [Spring Security](https://spring.io/projects/spring-security) e [Spring AOP](https://docs.spring.io/spring-framework/reference/core/aop.html)
+- Projetos e módulos do ecossistema Spring: [Spring Web MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html), [Spring Integration](https://spring.io/projects/spring-integration), [Spring Testing](https://docs.spring.io/spring-framework/reference/testing.html), [Spring Boot](https://spring.io/projects/spring-boot), [Spring Data JPA](https://spring.io/projects/spring-data-jpa), [Spring Security](https://spring.io/projects/spring-security) e [Spring AOP](https://docs.spring.io/spring-framework/reference/core/aop.html)
 - No Spring Security, como realizar autenticação com login, gerência de sessões e autorização baseada em privilégios
-- Discutir boas práticas no projeto de aplicações orientadas a microserviços
-- Construir REST APIs e Aplicações Web com [Spring MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html), [Thymeleaf](https://www.thymeleaf.org/), [Bootstrap CSS](https://getbootstrap.com/)
-- Persistência em banco de dados usando [Spring Data JDBC](https://spring.io/projects/spring-data-jdbc)/[JPA](https://spring.io/projects/spring-data-jpa), [MySQL](https://dev.mysql.com/doc/)/[MariaDB](https://mariadb.org/), [Flyway](https://flywaydb.org/)
-- Como utilizar ORM Frameworks (e.g., [Hibernate](https://hibernate.org/orm/))
+- Discutir boas práticas no projeto de aplicações orientadas a microsserviços
+- Construir APIs REST e aplicações Web com [Spring MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html), [Thymeleaf](https://www.thymeleaf.org/) e [Bootstrap CSS](https://getbootstrap.com/)
+- Persistência em banco de dados usando [Spring Data JDBC](https://spring.io/projects/spring-data-jdbc)/[JPA](https://spring.io/projects/spring-data-jpa), [MySQL](https://dev.mysql.com/doc/)/[MariaDB](https://mariadb.org/) e [Flyway](https://flywaydb.org/)
+- Como utilizar frameworks ORM (por exemplo, [Hibernate](https://hibernate.org/orm/))
 - Discutir os principais conceitos da [Jakarta Persistence API (JPA)](https://github.com/jakartaee/persistence)
-- Setup do desenvolvimento local com [Docker](https://docs.docker.com/), [Docker Compose](https://docs.docker.com/compose/), [Testcontainers](https://testcontainers.com/)
+- Configuração do ambiente de desenvolvimento local com [Docker](https://docs.docker.com/), [Docker Compose](https://docs.docker.com/compose/) e [Testcontainers](https://testcontainers.com/)
 - Como executar o banco de dados em um contêiner Docker
-- Usar o [JUnit](https://junit.org/), [AssertJ](https://assertj.github.io/doc/),  [Mockito](https://site.mockito.org/) para testes
+- Usar [JUnit](https://junit.org/), [AssertJ](https://assertj.github.io/doc/) e [Mockito](https://site.mockito.org/) para testes
 - Empacotar a aplicação Spring Boot (JAR), construir [imagens Docker eficientes](https://docs.spring.io/spring-boot/reference/packaging/container-images/efficient-images.html) usando [Dockerfiles](https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html)
-e boas práticas de [empacotamento em camadas](https://docs.spring.io/spring-boot/maven-plugin/packaging.html#packaging.layers), publicar em _registry_ e fazer o _deployment_
-com contêineres de banco de dados e da aplicação, para melhor portabilidade entre diferentes ambientes
+  e boas práticas de [empacotamento em camadas](https://docs.spring.io/spring-boot/maven-plugin/packaging.html#packaging.layers), publicar em _registry_ e fazer o _deployment_
+  com contêineres de banco de dados e da aplicação, para melhor portabilidade entre diferentes ambientes
 
 ## Material de Referência
 
@@ -48,7 +48,7 @@ As documentações oficiais:
 
 Outros links:
 
-- [Spring initializr](https://start.spring.io/) para gerar projetos. Alternativamente, pode-se usar **Spring Boot CLI** e o comando `spring init` via linha de comando (instalável via [SDKMAN](https://docs.spring.io/spring-boot/3.5/installing.html#getting-started.installing.cli.sdkman)) com parâmetros, por exemplo:
+- [Spring Initializr](https://start.spring.io/) para gerar projetos. Alternativamente, pode-se usar o **Spring Boot CLI** e o comando `spring init` via linha de comando (instalável via [SDKMAN](https://docs.spring.io/spring-boot/3.5/installing.html#getting-started.installing.cli.sdkman)) com parâmetros, por exemplo:
   ```bash
   spring init \
   --name=my-web-app \
@@ -64,18 +64,18 @@ Outros links:
   my-web-app
   ```
 
-**Nota**: Se você quiser aprender mais sobre o comando *spring init* da CLI, você pode executar o comando `spring help init`. Para ver quais dependências podem ser adicionadas, execute o comando `spring init --list`.
+**Nota**: se você quiser aprender mais sobre o comando *spring init* da CLI, execute o comando `spring help init`. Para ver quais dependências podem ser adicionadas, execute o comando `spring init --list`.
 
 ## Suporte ferramental básico
 
-- Um navegador (Firefox, Brave, Google Chrome, Opera, Safari, etc.)
-- Uma distribuição OpenJDK (e.g., [Amazon Correto](https://aws.amazon.com/corretto/)) - pode ser instalada via [SDKMAN](https://sdkman.io/jdks/)
+- Um navegador (Firefox, Brave, Google Chrome, Opera, Safari etc.)
+- Uma distribuição OpenJDK (por exemplo, [Amazon Corretto](https://aws.amazon.com/corretto/)), que pode ser instalada via [SDKMAN](https://sdkman.io/jdks/)
 - [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 - [Apache Maven](https://maven.apache.org/)
 - [Docker Desktop](https://docs.docker.com/get-started/get-docker/)
-- Um editor de texto (e.g., [Visual Studio Code](https://code.visualstudio.com/) ou [TRAE](https://trae.ai/))
+- Um editor de texto (por exemplo, [Visual Studio Code](https://code.visualstudio.com/))
 - Spring Boot CLI (instalável via [SDKMAN](https://docs.spring.io/spring-boot/3.5/installing.html#getting-started.installing.cli.sdkman)) para usar o comando `spring init`
-- Algumas [extensões](https://marketplace.visualstudio.com/vscode) do Visual Studio Code, que serão sugeridas pelo professor.
+- Algumas [extensões](https://marketplace.visualstudio.com/vscode) do Visual Studio Code, que serão sugeridas pelo professor
 
 ## Este repositório
 
@@ -87,12 +87,12 @@ $ git clone https://github.com/cesarvasconcelos/p3.git
 
 ## Autor
 
-* **Prof. Dr. César Vasconcelos (cesarocha@ifpb.edu.br)** - [GitHub Page](https://github.com/cesarvasconcelos)
+* **Prof. Dr. César Vasconcelos (cesarocha@ifpb.edu.br)**: [página no GitHub](https://github.com/cesarvasconcelos)
 
-## Para importar a imagem Ubuntu no WSL (Windows) no Laboratório do IFPB
+## Para importar a imagem Ubuntu no WSL (Windows) no laboratório do IFPB
 
-⚠️ Atenção: É necessário fazer este procedimento só uma vez, no laboratório do IFPB. Em casa,
-não é necessário fazer este processo. Apenas [instale o Docker Desktop](https://www.docker.com/get-started/) normalmente na sua máquina.
+**Atenção**: este procedimento só precisa ser feito uma vez, no laboratório do IFPB. Em casa,
+não é necessário fazê-lo. Apenas [instale o Docker Desktop](https://www.docker.com/get-started/) normalmente na sua máquina.
 
 ### Importar imagem Ubuntu no WSL (Windows)
 
@@ -109,28 +109,28 @@ não é necessário fazer este processo. Apenas [instale o Docker Desktop](https
 3. Importe a imagem do Ubuntu (use TAB para autocompletar o caminho):
 
    ```powershell
-   wsl --import Ubuntu D:\Users\<sua-matrícula>  D:\ubuntu-docker.tar
+   wsl --import Ubuntu D:\Users\<sua-matrícula> D:\ubuntu-docker.tar
    ```
 
-4. Listar as distribuições instaladas:
+4. Liste as distribuições instaladas:
 
    ```powershell
    wsl -l
    ```
 
-5. Iniciar o Ubuntu:
+5. Inicie o Ubuntu:
 
    ```powershell
    wsl -d Ubuntu
    ```
 
-6. Verificar se o Ubuntu possui o Docker:
+6. Já dentro do Ubuntu, verifique se o Docker está instalado:
 
-   ```powershell
+   ```bash
    docker version
    ```
 
-7. Faça a [integração do Docker com IntelliJ](https://www.jetbrains.com/help/idea/docker.html) conforme descrito na documentação oficial do IntelliJ.
+7. Faça a [integração do Docker com o IntelliJ](https://www.jetbrains.com/help/idea/docker.html) conforme descrito na documentação oficial do IntelliJ.
 
 Observações:
-- Use aspas nos caminhos, somente se houver espaços.
+- Use aspas nos caminhos somente se houver espaços.
