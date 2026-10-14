@@ -1,21 +1,27 @@
-# How to run the tests
+# Como executar os testes
 
-## How to package the app without running tests
+> **Lembrete:** a máquina pode não ter o Maven configurado no `PATH`. Nesse caso, use o **Maven Wrapper** (`./mvnw`) incluído no projeto no lugar de `mvn`. Todos os comandos abaixo funcionam com `./mvnw` (no Windows, use `mvnw.cmd`).
+>
+> Execute os comandos sempre a partir da pasta do projeto (onde está o `pom.xml`).
 
-- `mvn clean package -DskipTests` to **package** and create a Jar file **without** running tests
-- Check the `target/` folder to see if there is any Jar file.
+## Como empacotar a aplicação sem executar os testes
 
-### Running Tests
-- `mvn clean test -Dspring.profiles.active=test` to run the tests
+- `./mvnw clean package -DskipTests` para **empacotar** e gerar o arquivo Jar **sem** executar os testes
+- Verifique a pasta `target/` para confirmar se o arquivo Jar foi criado.
 
-### Running a single test class (only)
-Use Maven Surefire's `-Dtest` with the `test` profile activated:
+### Executando os testes
+- `./mvnw clean test -Dspring.profiles.active=test` para executar os testes
 
-- Run only `BookControllerIntegrationTest`:
-  - `mvn -Dspring.profiles.active=test -Dtest=com.example.books.integration.BookControllerIntegrationTest test`
+### Executando apenas uma classe de teste
+Use o `-Dtest` do Maven Surefire com o profile `test` ativado:
 
-- Run only `BookRepositoryUsingSpringTestContainersSupportTest`:
-  - `mvn -Dspring.profiles.active=test -Dtest=com.example.books.repository.BookRepositoryUsingSpringTestContainersSupportTest test`
+- Executar apenas `BookControllerIntegrationTest`:
+  - `./mvnw -Dspring.profiles.active=test -Dtest=com.example.books.integration.BookControllerIntegrationTest test`
 
-Tip: you can also run a single test method by appending `#methodName`:
-- `mvn -Dspring.profiles.active=test -Dtest=com.example.books.integration.BookControllerIntegrationTest#givenAuthenticatedUser_whenPostBook_thenItIsSavedAndRedirects test`
+- Executar apenas `BookRepositoryUsingSpringTestContainersSupportTest`:
+  - `./mvnw -Dspring.profiles.active=test -Dtest=com.example.books.repository.BookRepositoryUsingSpringTestContainersSupportTest test`
+
+Dica: você também pode executar um único método de teste adicionando `#nomeDoMetodo`:
+- `./mvnw -Dspring.profiles.active=test -Dtest=com.example.books.integration.BookControllerIntegrationTest#givenAuthenticatedUser_whenPostBook_thenItIsSavedAndRedirects test`
+
+> Se o `./mvnw` retornar "Permission denied" no Linux/macOS, torne-o executável com `chmod +x mvnw`.
