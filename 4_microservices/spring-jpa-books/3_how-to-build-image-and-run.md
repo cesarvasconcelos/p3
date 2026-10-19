@@ -7,6 +7,13 @@ Este guia mostra como:
    - `bookstore-app`: o serviço principal da aplicação, que usa o banco de dados.
    - `mysql`: o serviço de banco de dados.
 
+> ### Resumo: como containerizar manualmente a aplicação criando uma imagem Docker
+>
+> 1. `./mvnw clean package -DskipTests` — gera o JAR em `target/`
+> 2. `docker build -t bookstore-app:1.0 .` — cria a imagem Docker a partir do Dockerfile
+> 3. `docker compose -f compose-deploy.yaml up -d` — sobe a stack (aplicação + MySQL)
+> 4. `docker compose -f compose-deploy.yaml down -v` — derruba a stack e **remove os volumes** (os dados do MySQL são apagados)
+
 ## Empacotamento e Implantação com Docker
 
 O projeto inclui um `Dockerfile` multi-stage e um `compose-deploy.yaml` que definem os serviços da aplicação e do banco de dados.
@@ -97,13 +104,6 @@ Quando usar `--no-cache`:
 Quando usar `--progress=plain`:
 - Use para ver o progresso detalhado, camada por camada, do build.
 - Útil para depurar erros de build ou entender o comportamento do cache.
-
-> ### 📌 Resumo da Seção A: como containerizar manualmente a aplicação criando uma imagem Docker
->
-> 1. `./mvnw clean package -DskipTests` — gera o JAR em `target/`
-> 2. `docker build -t bookstore-app:1.0 .` — cria a imagem Docker a partir do Dockerfile
-> 3. `docker compose -f compose-deploy.yaml up -d` — sobe a stack (aplicação + MySQL)
-> 4. `docker compose -f compose-deploy.yaml down -v` — derruba a stack e **remove os volumes** (os dados do MySQL são apagados)
 
 ### B. Executar a Stack Completa com Docker Compose
 
