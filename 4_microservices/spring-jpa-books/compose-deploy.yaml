@@ -21,27 +21,41 @@ services:
             # Referencia do Compose: https://docs.docker.com/reference/compose-file/services/#healthcheck
             # Referencia do Docker HEALTHCHECK: https://docs.docker.com/reference/dockerfile/#healthcheck
             # `test` e o comando executado dentro do container do MySQL para verificar se o banco
-            # esta saudavel. Aqui, `mysqladmin ping -h localhost` testa se o servidor MySQL que
+            # esta saudavel. Aqui, `mysqladmin ping -h 127.0.0.1` testa se o servidor MySQL que
             # esta rodando no proprio container esta respondendo as requisicoes.
-            test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+            # IMPORTANTE: use 127.0.0.1 (TCP) e nao `localhost` (socket Unix). Na primeira
+            # inicializacao o MySQL sobe um servidor temporario SEM rede (so socket); com
+            # `localhost` o ping ja responderia OK nesse momento e a aplicacao tentaria conectar
+            # na porta 3306 antes de ela existir ("Connection refused").
+            test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1" ]
             # `interval` = o Docker executa o health check periodicamente a cada 10 segundos
             # enquanto o container estiver rodando.
             interval: 10s
             # `timeout` = cada execucao do comando de health check pode levar no maximo 5
             # segundos; se passar disso, aquela execucao conta como falha.
             timeout: 5s
-            # `retries` = o container so vira unhealthy depois de 3 falhas consecutivas do
+            # `retries` = o container so vira unhealthy depois de 10 falhas consecutivas do
             # health check.
-            retries: 3
-            # `start_period` = se estivesse configurado, daria um tempo inicial de tolerancia
-            # para o container terminar a inicializacao antes de o Docker considerar as falhas
-            # do health check na contagem de retries.
+            retries: 10
+            # `start_period` = tempo inicial de tolerancia para o container terminar a
+            # inicializacao antes de o Docker considerar as falhas do health check na contagem
+            # de retries. Na primeira subida (volume vazio) o MySQL pode levar mais de 1 minuto
+            # para inicializar o diretorio de dados.
+            start_period: 60s
         networks:
             - bookstore-network
     bookstore-app:
         image: bookstore-app:1.0
         container_name: bookstore
         build: .
+        # Referencia: https://docs.docker.com/reference/compose-file/services/#restart
+        # `restart: on-failure` = se o processo da aplicacao terminar com erro (exit code != 0),
+        # o Docker reinicia o container automaticamente. Funciona como uma protecao extra: o
+        # `depends_on` + healthcheck ja espera o MySQL ficar saudavel, mas se mesmo assim a
+        # aplicacao falhar ao conectar no banco (ex.: "Connection refused"), ela tenta de novo
+        # sozinha em vez de ficar parada. Se o container for parado manualmente (`docker stop`
+        # ou `docker compose down`), ele NAO e reiniciado.
+        restart: on-failure
         depends_on:
             mysql:
                 condition: service_healthy

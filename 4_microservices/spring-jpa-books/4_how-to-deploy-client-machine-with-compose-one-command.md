@@ -64,16 +64,20 @@ services:
     volumes:
       - vol_bookstore:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      # 127.0.0.1 (TCP) e não localhost (socket): evita "saudável" durante o servidor temporário da 1ª inicialização
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 60s
     networks:
       - bookstore-network
 
   bookstore-app:
     image: cesarvasconcelos/bookstore-app:1.0
     container_name: bookstore-app
+    # Reinicia o container se a app falhar (ex.: banco ainda indisponível) e também após reboot do host,
+    # exceto se você o parou manualmente
     restart: unless-stopped
     depends_on:
       db:
