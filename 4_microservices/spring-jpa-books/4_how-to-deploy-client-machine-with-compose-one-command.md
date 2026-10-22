@@ -1,5 +1,51 @@
 # Deploy no cliente com Docker Compose (simples)
 
+## O que precisa ser copiado para o cliente
+
+| Item | Como chega ao cliente |
+|---|---|
+| `compose.yaml` (conteúdo abaixo) | **você copia** para uma pasta do cliente |
+| Imagem `cesarvasconcelos/bookstore-app:1.0` | baixada automaticamente do Docker Hub (publicada antes, nos passos 1 a 4 abaixo) |
+| Imagem `mysql:8.4` | baixada automaticamente do Docker Hub |
+| Docker (Engine ou Desktop) com Compose | instalado no cliente |
+
+Nenhum `.env`, JAR ou código-fonte precisa ir para o cliente.
+
+## Comandos em ordem
+
+```bash
+# 1) Na máquina do desenvolvedor: gera o JAR
+./mvnw clean package -DskipTests
+
+# 2) Na máquina do desenvolvedor: constrói a imagem
+docker build -t bookstore-app:1.0 .
+
+# 3) Na máquina do desenvolvedor: dá à imagem o nome do repositório no Docker Hub
+docker tag bookstore-app:1.0 cesarvasconcelos/bookstore-app:1.0
+
+# 4) Na máquina do desenvolvedor: autentica e publica a imagem
+docker login
+docker push cesarvasconcelos/bookstore-app:1.0
+
+# 5) No cliente: crie a pasta e o compose.yaml (conteúdo na próxima seção)
+mkdir bookstore && cd bookstore
+
+# 6) No cliente: baixa as imagens, cria rede e volume e sobe os dois contêineres.
+#    O bookstore-app só inicia depois que o MySQL estiver saudável (healthcheck).
+docker compose up -d
+
+# 7) No cliente: verifica o status e os logs
+docker compose ps
+docker compose logs -f bookstore-app
+
+# 8) No cliente: acesse http://localhost:8080
+
+# 9) No cliente: para tudo (use -v apenas se quiser apagar os dados do banco)
+docker compose down
+```
+
+## O arquivo `compose.yaml`
+
 No cliente Linux, crie um arquivo `compose.yaml` com o conteúdo abaixo:
 
 ```yaml
