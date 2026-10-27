@@ -6,7 +6,7 @@
 
 ## Versão do projeto (`pom.xml`)
 
-Este módulo foi migrado para o `spring-boot-starter-parent` **4.1.1** (Java 21), diferente da
+Este módulo foi migrado para o `spring-boot-starter-parent` **4.1.2** (Java 21), diferente da
 linha de base **3.5.x** usada nos módulos anteriores do curso. Essa migração trouxe uma mudança
 de nomenclatura nas dependências relevantes para este passo a passo:
 
@@ -14,7 +14,7 @@ de nomenclatura nas dependências relevantes para este passo a passo:
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>4.1.1</version>
+    <version>4.1.2</version>
     <relativePath/> <!-- lookup parent from repository -->
 </parent>
 
