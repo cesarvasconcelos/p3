@@ -59,7 +59,7 @@ Outros links:
   --java-version=21 \
   --packaging=jar \
   --version=0.0.1-SNAPSHOT \
-  --boot-version=4.1.1 \
+  --boot-version=4.1.2 \
   --build=maven \
   my-web-app
   ```

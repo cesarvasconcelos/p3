@@ -21,7 +21,7 @@ Crie um novo projeto Spring Boot com a estrutura abaixo ou reutilize a existente
 
 ### 2. Configurar o `pom.xml`
 
-> **Atenção:** este módulo foi migrado para o `spring-boot-starter-parent` na versão **4.1.1**. Nessa versão alguns starters foram renomeados/reorganizados em relação a versões anteriores do Spring Boot — por exemplo, `spring-boot-starter-web` virou `spring-boot-starter-webmvc`, o Flyway passou a ter um starter próprio (`spring-boot-starter-flyway`) e os starters de teste ganharam variantes dedicadas (`spring-boot-starter-*-test`). Use exatamente as dependências abaixo, que refletem o `pom.xml` atual do projeto:
+> **Atenção:** este módulo foi migrado para o `spring-boot-starter-parent` na versão **4.1.2**. Nessa versão alguns starters foram renomeados/reorganizados em relação a versões anteriores do Spring Boot — por exemplo, `spring-boot-starter-web` virou `spring-boot-starter-webmvc`, o Flyway passou a ter um starter próprio (`spring-boot-starter-flyway`) e os starters de teste ganharam variantes dedicadas (`spring-boot-starter-*-test`). Use exatamente as dependências abaixo, que refletem o `pom.xml` atual do projeto:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -33,7 +33,7 @@ Crie um novo projeto Spring Boot com a estrutura abaixo ou reutilize a existente
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.1</version>
+        <version>4.1.2</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
