@@ -20,7 +20,7 @@ programação.
 - No Spring Security, como realizar autenticação com login, gerência de sessões e autorização baseada em privilégios
 - Discutir boas práticas no projeto de aplicações orientadas a microsserviços
 - Construir APIs REST e aplicações Web com [Spring MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html), [Thymeleaf](https://www.thymeleaf.org/) e [Bootstrap CSS](https://getbootstrap.com/)
-- Persistência em banco de dados usando [Spring Data JDBC](https://spring.io/projects/spring-data-jdbc)/[JPA](https://spring.io/projects/spring-data-jpa), [MySQL](https://dev.mysql.com/doc/)/[MariaDB](https://mariadb.org/) e [Flyway](https://flywaydb.org/)
+- Persistência em banco de dados usando [Spring Data JDBC](https://spring.io/projects/spring-data-jdbc)/[JPA](https://spring.io/projects/spring-data-jpa), [MariaDB](https://mariadb.org/documentation/) e [Flyway](https://flywaydb.org/)
 - Como utilizar frameworks ORM (por exemplo, [Hibernate](https://hibernate.org/orm/))
 - Discutir os principais conceitos da [Jakarta Persistence API (JPA)](https://github.com/jakartaee/persistence)
 - Configuração do ambiente de desenvolvimento local com [Docker](https://docs.docker.com/), [Docker Compose](https://docs.docker.com/compose/) e [Testcontainers](https://testcontainers.com/)

@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * Key points:
  * - @SpringBootTest loads the full Spring context (not sliced tests).
  * - @AutoConfigureMockMvc provides MockMvcTester to test the MVC layer without starting a real server.
- * - @Import(TestcontainersConfiguration.class) brings in the MySQL Testcontainer bean for a real DB.
+ * - @Import(TestcontainersConfiguration.class) brings in the MariaDB Testcontainer bean for a real DB.
  * - @ActiveProfiles("test") activates the "test" profile (e.g., properties).
  * - @Transactional ensures each test runs in a transaction and rolls back after completion.
  * - @Sql sets up and tears down the DB schema/fixtures for deterministic tests.
@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @DisplayName("Test class for BookController endpoints - full integration tests")
 @AutoConfigureMockMvc
-@Import({ TestcontainersConfiguration.class }) // Wires in the MySQL Testcontainer as a datasource
+@Import({ TestcontainersConfiguration.class }) // Wires in the MariaDB Testcontainer as a datasource
 @ActiveProfiles("test")
 @Transactional // Ensures each test rolls back after running (isolated tests)
 @Sql(scripts = "classpath:/sql/create-test-database.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD) // Prepare schema/data

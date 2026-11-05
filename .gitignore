@@ -146,3 +146,5 @@ CLAUDE.LOCAL.MD
 .claude/
 docs/
 plan/
+# Application log folders (created by the Spring Boot apps in any module)
+logs/

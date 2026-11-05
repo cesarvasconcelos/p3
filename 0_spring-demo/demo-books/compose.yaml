@@ -1,34 +1,34 @@
-# https://hub.docker.com/_/mysql#connect-to-mysql-from-the-mysql-command-line-client
+# https://hub.docker.com/_/mariadb#connect-to-mariadb-from-the-mariadb-command-line-client
 # https://github.com/docker/awesome-compose
 services:
-    mysql:
-        image: 'mysql:8.4'
+    mariadb:
+        image: 'mariadb:lts'
         container_name: db
         volumes:
             # Bind mount: liga um arquivo do computador (host) a um caminho
-            # dentro do container. A imagem do MySQL executa automaticamente
+            # dentro do container. A imagem do MariaDB executa automaticamente
             # qualquer arquivo .sql que esteja em /docker-entrypoint-initdb.d,
             # mas SOMENTE na primeira vez que o container sobe (quando o
             # banco ainda está vazio). É assim que a tabela é criada.
             - ./init.sql:/docker-entrypoint-initdb.d/init.sql
             # Volume nomeado: um espaço de armazenamento gerenciado pelo
-            # próprio Docker (não é uma pasta do projeto). O MySQL guarda
+            # próprio Docker (não é uma pasta do projeto). O MariaDB guarda
             # os arquivos reais do banco em /var/lib/mysql, então é esse
             # volume que faz os dados sobreviverem quando você reinicia o
             # container ou roda `docker compose down` (sem -v).
             - vol_books:/var/lib/mysql
         environment:
-            # Variáveis de ambiente lidas pela imagem do MySQL para
+            # Variáveis de ambiente lidas pela imagem do MariaDB para
             # configurar o banco automaticamente na primeira inicialização.
-            - 'MYSQL_DATABASE=db_books'        # nome do banco criado automaticamente
-            - 'MYSQL_ROOT_PASSWORD=secret'     # senha do usuário root (administrador)
-            - 'MYSQL_USER=cesar'               # um usuário extra, além do root...
-            - 'MYSQL_PASSWORD=cesar'           # ...com esta senha, e acesso total ao MYSQL_DATABASE
+            - 'MARIADB_DATABASE=db_books'        # nome do banco criado automaticamente
+            - 'MARIADB_ROOT_PASSWORD=secret'     # senha do usuário root (administrador)
+            - 'MARIADB_USER=cesar'               # um usuário extra, além do root...
+            - 'MARIADB_PASSWORD=cesar'           # ...com esta senha, e acesso total ao MARIADB_DATABASE
         ports:
             # Formato "PORTA_DO_HOST:PORTA_DO_CONTAINER". Isso liga a porta
-            # 3306 do container (porta padrão do MySQL) à porta 3306 da sua
+            # 3306 do container (porta padrão do MariaDB) à porta 3306 da sua
             # máquina, permitindo que programas fora do Docker (como a
-            # aplicação Spring Boot ou um cliente MySQL) acessem o banco
+            # aplicação Spring Boot ou um cliente MariaDB) acessem o banco
             # pelo endereço localhost:3306. Se essa porta já estiver em uso
             # no seu computador, basta trocar o número do lado esquerdo.
             - '3306:3306'

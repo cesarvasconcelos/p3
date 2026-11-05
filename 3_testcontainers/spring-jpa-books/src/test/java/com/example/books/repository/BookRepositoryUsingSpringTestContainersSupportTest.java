@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * Highlights:
  * - {@code @DataJpaTest} boots only JPA-related components (repositories, entities, JPA config) for fast tests.
- * - {@code @Import(TestcontainersConfiguration.class)} wires a MySQL Testcontainer as the datasource.
+ * - {@code @Import(TestcontainersConfiguration.class)} wires a MariaDB Testcontainer as the datasource.
  * - {@code @ActiveProfiles("test")} activates the "test" profile. You can also pass
  *   {@code -Dspring.profiles.active=test} when running tests (e.g., {@code mvn clean test -Dspring.profiles.active=test}).
  * - {@code @Sql} sets up and tears down the schema and data around each test for repeatability.

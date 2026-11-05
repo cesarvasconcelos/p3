@@ -1,4 +1,4 @@
-# Como rodar o JAR localmente usando apenas o MySQL do Docker
+# Como rodar o JAR localmente usando apenas o MariaDB do Docker
 
 Este guia é para quando você quer estudar ou executar a aplicação **fora de container** (e fora do IntelliJ), usando `java -jar`.
 
@@ -9,11 +9,15 @@ Se você quer rodar a app fora de container (e fora do IntelliJ), o ideal é:
 1. Subir só o banco com `compose.yaml`
 2. Rodar o executável JAR localmente no terminal
 
-## Passo 1: subir somente o MySQL
+## Passo 1: subir somente o MariaDB
+
+> **Atenção (migração MySQL → MariaDB):** se você já subiu este projeto antes, quando ele usava MySQL, o volume
+> Docker `vol_bookstore` ainda guarda os dados do MySQL e o MariaDB **não consegue iniciá-los**
+> (erro `InnoDB: File ./ib_logfile0 was not found`). Apague o volume uma única vez com `docker compose down -v`.
 
 ```bash
 cd 4_microservices/spring-jpa-books
-docker compose up -d mysql
+docker compose up -d mariadb
 ```
 
 ## Passo 2: executar a aplicação com `java -jar`
@@ -26,7 +30,7 @@ cd ~/github/p3/4_microservices/spring-jpa-books
 ```
 
 ```bash
-SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/db_bookstore?useSSL=false&allowPublicKeyRetrieval=true" \
+SPRING_DATASOURCE_URL="jdbc:mariadb://localhost:3306/db_bookstore" \
 SPRING_DATASOURCE_USERNAME=root \
 SPRING_DATASOURCE_PASSWORD=secret \
 java -jar target/bookstore-app.jar
@@ -38,7 +42,7 @@ O resultado é o mesmo. Em vez de variáveis de ambiente, usamos propriedades do
 
 ```bash
 java -jar target/bookstore-app.jar \
-  --spring.datasource.url="jdbc:mysql://localhost:3306/db_bookstore?useSSL=false&allowPublicKeyRetrieval=true" \
+  --spring.datasource.url="jdbc:mariadb://localhost:3306/db_bookstore" \
   --spring.datasource.username=root \
   --spring.datasource.password=secret
 ```
@@ -52,11 +56,10 @@ Ambas as formas têm precedência sobre o `application.properties` (argumentos d
 ## Observação importante
 
 Quando a aplicação roda localmente (fora de container), o host do banco deve ser `localhost`.
-O host `mysql` é usado quando a aplicação também está rodando em container na mesma rede Docker.
+O host `mariadb` é usado quando a aplicação também está rodando em container na mesma rede Docker.
 
-Ao sobrescrever a URL, ela **substitui a URL inteira**, inclusive os parâmetros do `application.properties`.
-Por isso `useSSL=false&allowPublicKeyRetrieval=true` precisam ser repetidos. Sem `allowPublicKeyRetrieval=true`,
-com `useSSL=false` e o MySQL 8.4 recém-criado, a app falha com `Public Key Retrieval is not allowed`.
+Ao sobrescrever a URL, ela **substitui a URL inteira** do `application.properties`. Com o driver do MariaDB
+não é necessário nenhum parâmetro extra (como `useSSL` ou `allowPublicKeyRetrieval`, exigidos pelo MySQL 8).
 
 ## Como parar tudo
 
@@ -68,17 +71,17 @@ Isso envia um `SIGINT` para a JVM, que dispara o *shutdown hook* do Spring Boot:
 finaliza as requisições em andamento, fecha o pool de conexões e encerra de forma limpa.
 Evite `kill -9`, pois ele mata o processo sem dar chance de liberar os recursos.
 
-### 2. Derrubar o MySQL e remover o volume
+### 2. Derrubar o MariaDB e remover o volume
 
 ```bash
 docker compose down -v
 ```
 
 O `down` para e remove os containers e a rede. A flag `-v` também remove os **volumes**, ou seja,
-**todos os dados do banco são apagados**. Na próxima vez que subir o MySQL, ele começa do zero.
+**todos os dados do banco são apagados**. Na próxima vez que subir o MariaDB, ele começa do zero.
 Se quiser preservar os dados, use apenas `docker compose down`.
 
-## Informação complementar: por que o `java -jar` não sobe o MySQL sozinho?
+## Informação complementar: por que o `java -jar` não sobe o MariaDB sozinho?
 
 Seria natural esperar que o `java -jar` também iniciasse o container, já que o **Docker Compose Support**
 está no `pom.xml`. Mas ele **só funciona em tempo de desenvolvimento**: não vai para dentro do JAR
@@ -105,7 +108,7 @@ unzip -l target/bookstore-app.jar | grep -i docker-compose   # não retorna nada
 
 Então, ao rodar `java -jar target/bookstore-app.jar`, o código que procuraria o `compose.yaml` e
 executaria o `docker compose up` simplesmente não está no classpath. A aplicação tenta conectar no
-MySQL em `localhost:3306` e falha, porque ninguém subiu o banco.
+MariaDB em `localhost:3306` e falha, porque ninguém subiu o banco.
 
 ### Para que ele serve, então
 
@@ -132,15 +135,15 @@ por fora (compose, Kubernetes, serviço gerenciado), e a app só recebe a URL e 
 este guia pede os dois passos separados:
 
 ```bash
-docker compose up -d mysql
+docker compose up -d mariadb
 java -jar target/bookstore-app.jar --spring.datasource.url=...
 ```
 
-| Forma de execução | Docker Compose Support ativo? | Quem sobe o MySQL? |
+| Forma de execução | Docker Compose Support ativo? | Quem sobe o MariaDB? |
 |---|---|---|
 | `./mvnw spring-boot:run` / IDE | ✅ Sim | O Spring Boot, automaticamente |
 | `./mvnw test` | ❌ Não, desativado em testes por padrão | Testcontainers (módulo 3) |
-| `java -jar app.jar` | ❌ Não, excluído do JAR | Você (`docker compose up -d mysql`) |
+| `java -jar app.jar` | ❌ Não, excluído do JAR | Você (`docker compose up -d mariadb`) |
 
 > Dá para forçar a inclusão no JAR com `<excludeDockerCompose>false</excludeDockerCompose>` na
 > configuração do `spring-boot-maven-plugin`, mas isso não é recomendado e foge do objetivo

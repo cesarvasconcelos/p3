@@ -18,7 +18,7 @@ externo, usando apenas o comando `docker run`.
 |---|---|
 | Docker (Engine ou Desktop) | instalado no cliente |
 | Imagem `cesarvasconcelos/bookstore-app:1.0` | baixada automaticamente do Docker Hub |
-| Imagem `mysql:8.4` | baixada automaticamente do Docker Hub |
+| Imagem `mariadb:lts` | baixada automaticamente do Docker Hub |
 | Os comandos abaixo | você os copia e cola no terminal do cliente |
 
 ## Comandos em ordem
@@ -32,18 +32,18 @@ docker login                                                       # 4) autentic
 docker push cesarvasconcelos/bookstore-app:1.0                     # 5) publica
 
 # --- No cliente (apenas o Docker instalado) ---
-docker volume create vol_bookstore                                 # 6) volume para os dados do MySQL
+docker volume create vol_bookstore                                 # 6) volume para os dados do MariaDB
 docker network create --driver=bridge bookstore-network            # 7) rede para os contêineres se acharem pelo nome
 
 docker run -d --name db --network bookstore-network \
-    -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=db_bookstore \
-    -e MYSQL_USER=cesar -e MYSQL_PASSWORD=cesar123 \
-    -v vol_bookstore:/var/lib/mysql mysql:8.4                      # 8) sobe o banco
+    -e MARIADB_ROOT_PASSWORD=secret -e MARIADB_DATABASE=db_bookstore \
+    -e MARIADB_USER=cesar -e MARIADB_PASSWORD=cesar123 \
+    -v vol_bookstore:/var/lib/mysql mariadb:lts                    # 8) sobe o banco
 
-docker logs -f db                                                  # 9) espere "ready for connections" (Ctrl+C sai)
+docker logs -f db                                                  # 9) espere o 2º "ready for connections" (port: 3306)
 
 docker run -d --name bookstore-app --network bookstore-network -p 8080:8080 \
-    -e SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/db_bookstore \
+    -e SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/db_bookstore \
     -e SPRING_DATASOURCE_USERNAME=root -e SPRING_DATASOURCE_PASSWORD=secret \
     cesarvasconcelos/bookstore-app:1.0                             # 10) sobe a aplicação
 
@@ -90,7 +90,7 @@ e baixe o instalador para o seu sistema operacional. Execute o instalador e siga
 
 Execute um contêiner de banco de dados e aponte a aplicação para ele por meio de variáveis de ambiente.
 
-### Exemplo com MySQL
+### Exemplo com MariaDB
 
 1) Crie um volume Docker para persistir os dados do banco. Isso é fundamental: sem ele, os dados são perdidos quando o contêiner é removido.
 
@@ -105,30 +105,35 @@ Execute um contêiner de banco de dados e aponte a aplicação para ele por meio
     ```bash
     docker run -d --name db \
         --network bookstore-network \
-        -e MYSQL_ROOT_PASSWORD=secret \
-        -e MYSQL_DATABASE=db_bookstore \
-        -e MYSQL_USER=cesar \
-        -e MYSQL_PASSWORD=cesar123 \
+        -e MARIADB_ROOT_PASSWORD=secret \
+        -e MARIADB_DATABASE=db_bookstore \
+        -e MARIADB_USER=cesar \
+        -e MARIADB_PASSWORD=cesar123 \
         -p 3306:3306 \
         -v vol_bookstore:/var/lib/mysql \
-        mysql:8.4
+        mariadb:lts
     ```
     Esse comando executa o contêiner do banco de dados e baixa a imagem caso ela ainda não exista na máquina do cliente.
 
     > A opção `-p 3306:3306` é **opcional**: ela só serve para acessar o banco a partir da máquina hospedeira
-    > (por exemplo, com o MySQL Workbench). A aplicação acessa o banco pela rede Docker e não precisa dela.
+    > (por exemplo, com o DBeaver ou HeidiSQL). A aplicação acessa o banco pela rede Docker e não precisa dela.
     > Remova-a se não precisar do acesso externo ou se a porta 3306 já estiver em uso.
 
 4) Verifique o status do contêiner do banco de dados:
     - `docker logs db` para ver os logs do banco
     - `docker logs -f --tail=0 db` para acompanhar apenas os logs novos. `-f` (*follow*) faz o comando não terminar e aguardar novas mensagens de log; `--tail=0` indica que não queremos ver as mensagens anteriores, apenas as novas.
 
-5) Aguarde de 10 a 20 segundos para o banco inicializar (nos logs, procure a mensagem `ready for connections`) e, então, inicie a aplicação:
+5) Aguarde de 10 a 20 segundos para o banco inicializar (nos logs, procure a mensagem `ready for connections`) e, então, inicie a aplicação.
+
+    > **Atenção:** na primeira inicialização essa mensagem aparece **duas vezes**. A primeira (`port: 0`) vem do servidor
+    > temporário que cria o banco e o usuário; ele logo é desligado e reiniciado. Aguarde a **segunda**, com `port: 3306`.
+    > Iniciar a aplicação antes disso causa erro de conexão.
+
     ```bash
     docker run -d --name bookstore-app \
         --network bookstore-network \
         -p 8080:8080 \
-        -e SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/db_bookstore \
+        -e SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/db_bookstore \
         -e SPRING_DATASOURCE_USERNAME=root \
         -e SPRING_DATASOURCE_PASSWORD=secret \
         cesarvasconcelos/bookstore-app:1.0
@@ -156,16 +161,16 @@ Crie dois arquivos na mesma pasta em que executará os comandos (ou use caminhos
 `db.env`
 
 ```properties
-# -------- Configuração do contêiner MySQL --------
+# -------- Configuração do contêiner MariaDB --------
 # Senha do root, para acesso administrativo
-MYSQL_ROOT_PASSWORD=secret
+MARIADB_ROOT_PASSWORD=secret
 
 # Nome do banco da aplicação, criado automaticamente na primeira inicialização
-MYSQL_DATABASE=db_bookstore
+MARIADB_DATABASE=db_bookstore
 
-# Usuário comum do banco, criado automaticamente com privilégios sobre MYSQL_DATABASE
-MYSQL_USER=cesar
-MYSQL_PASSWORD=cesar123
+# Usuário comum do banco, criado automaticamente com privilégios sobre MARIADB_DATABASE
+MARIADB_USER=cesar
+MARIADB_PASSWORD=cesar123
 ```
 
 `app.env`
@@ -173,7 +178,7 @@ MYSQL_PASSWORD=cesar123
 ```properties
 # -------- Configuração do Datasource do Spring --------
 # Use o nome do contêiner 'db' como host, por meio da rede Docker
-SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/db_bookstore
+SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/db_bookstore
 
 # Prefira o usuário comum definido em db.env
 # Se quiser usar o root, altere estas duas linhas.
@@ -195,15 +200,15 @@ docker network create --driver=bridge bookstore-network
 
 > Se os contêineres `db` e `bookstore-app` da seção anterior ainda existirem, remova-os antes para liberar os nomes
 > e as portas: `docker rm -f bookstore-app db`. O volume `vol_bookstore` mantém os dados do banco já criado.
-> Atenção: como o volume já foi inicializado com as credenciais antigas, o MySQL **ignora** as variáveis
-> `MYSQL_*` do `db.env`. Para recomeçar do zero, remova também o volume: `docker volume rm vol_bookstore`.
+> Atenção: como o volume já foi inicializado com as credenciais antigas, o MariaDB **ignora** as variáveis
+> `MARIADB_*` do `db.env`. Para recomeçar do zero, remova também o volume: `docker volume rm vol_bookstore`.
 
 ### 3) Execute o banco de dados com `--env-file`
 
 Pronto para copiar e colar:
 
 ```bash
-# Executa um contêiner MySQL 8.4:
+# Executa um contêiner MariaDB (imagem mariadb:lts):
 # - conecta-se à rede 'bookstore-network' para que a aplicação o alcance pelo nome de host 'db'
 # - publica a porta 3306 para ferramentas locais (opcional; remova se não precisar de acesso pela máquina hospedeira)
 # - monta o volume 'vol_bookstore' para persistir os dados entre reinicializações do contêiner
@@ -213,26 +218,27 @@ docker run -d --name db \
   -p 3306:3306 \
   -v vol_bookstore:/var/lib/mysql \
   --env-file ./db.env \
-  mysql:8.4
+  mariadb:lts
 ```
 ```diff
 # Nota: em vez de várias opções -e, use um único arquivo de ambiente
--    -e MYSQL_ROOT_PASSWORD=secret \
--    -e MYSQL_DATABASE=db_bookstore \
--    -e MYSQL_USER=cesar \
--    -e MYSQL_PASSWORD=cesar123 \
+-    -e MARIADB_ROOT_PASSWORD=secret \
+-    -e MARIADB_DATABASE=db_bookstore \
+-    -e MARIADB_USER=cesar \
+-    -e MARIADB_PASSWORD=cesar123 \
 +    --env-file ./db.env \
 ```
 
 ### 4) Execute a aplicação com `--env-file`
 
-Aguarde de 10 a 20 segundos para o MySQL inicializar e, então, inicie a aplicação.
+Aguarde de 10 a 20 segundos para o MariaDB inicializar e, então, inicie a aplicação.
+Confirme com `docker logs db` que a **segunda** mensagem `ready for connections` (`port: 3306`) já apareceu.
 
 Pronto para copiar e colar:
 
 ```bash
 # Executa a Bookstore App (Spring Boot):
-# - conecta-se à rede 'bookstore-network' para alcançar o MySQL pelo host 'db'
+# - conecta-se à rede 'bookstore-network' para alcançar o MariaDB pelo host 'db'
 # - publica a porta 8080 para acesso pelo navegador na máquina hospedeira
 # - carrega a URL do datasource e as credenciais a partir de app.env
 docker run -d --name bookstore-app \
@@ -243,7 +249,7 @@ docker run -d --name bookstore-app \
 ```
 ```diff
 # Nota: em vez de várias opções -e, use um único arquivo de ambiente
--    -e SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/db_bookstore \
+-    -e SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/db_bookstore \
 -    -e SPRING_DATASOURCE_USERNAME=root \
 -    -e SPRING_DATASOURCE_PASSWORD=secret \
 +    --env-file ./app.env \
@@ -264,7 +270,7 @@ Acesse: `http://localhost:8080`
 - Caminhos relativos e absolutos: `--env-file` aceita caminhos relativos ou absolutos (por exemplo, `--env-file /home/usuario/config/db.env`).
 - Segurança: mantenha os arquivos `.env` fora do controle de versão e dos backups sem proteção. Prefira usuários comuns (não root) para a aplicação.
 - Para usar o root (se necessário): defina `SPRING_DATASOURCE_USERNAME=root` e `SPRING_DATASOURCE_PASSWORD=secret` no `app.env`.
-- Comportamento na primeira execução: com `MYSQL_DATABASE`, `MYSQL_USER` e `MYSQL_PASSWORD`, o MySQL cria o banco e concede os privilégios apenas na primeira inicialização; as próximas inicializações reaproveitam os dados de `vol_bookstore`.
+- Comportamento na primeira execução: com `MARIADB_DATABASE`, `MARIADB_USER` e `MARIADB_PASSWORD`, o MariaDB cria o banco e concede os privilégios apenas na primeira inicialização; as próximas inicializações reaproveitam os dados de `vol_bookstore`.
 - Para parar e limpar tudo: `docker rm -f bookstore-app db`, `docker network rm bookstore-network` e, **se quiser apagar os dados**, `docker volume rm vol_bookstore`.
 
 ## Observação final: orquestração em produção

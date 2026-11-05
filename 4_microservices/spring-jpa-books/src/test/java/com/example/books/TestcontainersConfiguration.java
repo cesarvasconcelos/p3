@@ -3,19 +3,19 @@ package com.example.books;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
-import org.testcontainers.mysql.MySQLContainer;
+import org.testcontainers.mariadb.MariaDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.Map;
 
 /**
- * Test-specific configuration that provides a MySQL Testcontainer.
+ * Test-specific configuration that provides a MariaDB Testcontainer.
  *
  * Highlights:
  * - @TestConfiguration registers beans only for tests (not for production).
  * - @ServiceConnection lets Spring Boot auto-wire container connection details
  *   into the application's datasource (no manual URL/username/password needed).
- * - MySQLContainer is started lazily by tests when the datasource is required.
+ * - MariaDBContainer is started lazily by tests when the datasource is required.
  */
 @TestConfiguration(proxyBeanMethods = false)
 public class TestcontainersConfiguration {
@@ -36,9 +36,9 @@ public class TestcontainersConfiguration {
      */
     @Bean
     @ServiceConnection
-    MySQLContainer mysqlContainer() {
-        return new MySQLContainer( DockerImageName.parse( "mysql:8.4" ))
-                // Keeps MySQL data in RAM (tmpfs): avoids slow disk fsync during initialization.
+    MariaDBContainer mariaDbContainer() {
+        return new MariaDBContainer( DockerImageName.parse( "mariadb:lts" ))
+                // Keeps MariaDB data in RAM (tmpfs): avoids slow disk fsync during initialization.
                 // Test data is disposable anyway, so there is no need to persist it on disk.
                 .withTmpFs( Map.of( "/var/lib/mysql", "rw" ));
         // .withDatabaseName("db_bookstore");
@@ -49,9 +49,9 @@ public class TestcontainersConfiguration {
 /**
  * Default password behavior:
  * - If no custom password is set, the default user password 'test' is also
- *   applied to the MySQL root user.
+ *   applied to the MariaDB root user.
  * - If you set a custom password (e.g., .withPassword("secret")), that value
- *   is used for both the database user and the MySQL root user.
+ *   is used for both the database user and the MariaDB root user.
  *
  * Examples:
  * - you can use both .withUsername("cesar").withPassword("cesar") -> creates user 'cesar' with password 'cesar'.
