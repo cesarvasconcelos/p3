@@ -3,7 +3,7 @@ services:
         image: 'mariadb:lts'
         container_name: db
         volumes:
-#            - ./init.sql:/docker-entrypoint-initdb.d/init.sql # leia instructions.txt
+#            - ./init.sql:/docker-entrypoint-initdb.d/init.sql # leia more-about-db-initialization.txt
             - vol_bookstore:/var/lib/mysql
         environment:
             - 'MARIADB_DATABASE=${MARIADB_DATABASE}'

@@ -40,8 +40,9 @@ services:
             retries: 10
             # `start_period` = tempo inicial de tolerancia para o container terminar a
             # inicializacao antes de o Docker considerar as falhas do health check na contagem
-            # de retries. Na primeira subida (volume vazio) o MariaDB pode levar mais de 1 minuto
-            # para inicializar o diretorio de dados.
+            # de retries. Na primeira subida (volume vazio) o MariaDB leva em geral de 10 a 20 segundos
+            # para inicializar o diretorio de dados (pode demorar mais em maquinas lentas); 60s e uma
+            # margem folgada.
             start_period: 60s
         networks:
             - bookstore-network
