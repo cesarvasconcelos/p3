@@ -39,7 +39,7 @@ de nomenclatura nas dependências relevantes para este passo a passo:
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-webmvc</artifactId>
     </dependency>
-    <!-- ... demais dependências (Flyway, MySQL driver, Docker Compose, testcontainers) ... -->
+    <!-- ... demais dependências (Flyway, MariaDB driver, Docker Compose, testcontainers) ... -->
 </dependencies>
 ```
 

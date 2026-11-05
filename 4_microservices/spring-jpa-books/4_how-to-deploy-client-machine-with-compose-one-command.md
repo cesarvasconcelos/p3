@@ -6,7 +6,7 @@
 |---|---|
 | `compose.yaml` (conteúdo abaixo) | **você copia** para uma pasta do cliente |
 | Imagem `cesarvasconcelos/bookstore-app:1.0` | baixada automaticamente do Docker Hub (publicada antes, nos passos 1 a 4 abaixo) |
-| Imagem `mysql:8.4` | baixada automaticamente do Docker Hub |
+| Imagem `mariadb:lts` | baixada automaticamente do Docker Hub |
 | Docker (Engine ou Desktop) com Compose | instalado no cliente |
 
 Nenhum `.env`, JAR ou código-fonte precisa ir para o cliente.
@@ -31,7 +31,7 @@ docker push cesarvasconcelos/bookstore-app:1.0
 mkdir bookstore && cd bookstore
 
 # 6) No cliente: baixa as imagens, cria rede e volume e sobe os dois contêineres.
-#    O bookstore-app só inicia depois que o MySQL estiver saudável (healthcheck).
+#    O bookstore-app só inicia depois que o MariaDB estiver saudável (healthcheck).
 docker compose up -d
 
 # 7) No cliente: verifica o status e os logs
@@ -51,21 +51,21 @@ No cliente Linux, crie um arquivo `compose.yaml` com o conteúdo abaixo:
 ```yaml
 services:
   db:
-    image: mysql:8.4
+    image: mariadb:lts
     container_name: db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: db_bookstore
-      MYSQL_USER: cesar
-      MYSQL_PASSWORD: cesar123
+      MARIADB_ROOT_PASSWORD: secret
+      MARIADB_DATABASE: db_bookstore
+      MARIADB_USER: cesar
+      MARIADB_PASSWORD: cesar123
     ports:
       - "3306:3306"
     volumes:
       - vol_bookstore:/var/lib/mysql
     healthcheck:
-      # 127.0.0.1 (TCP) e não localhost (socket): evita "saudável" durante o servidor temporário da 1ª inicialização
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      # healthcheck.sh vem na imagem do MariaDB; --connect testa via TCP, evitando "saudável" durante o servidor temporário da 1ª inicialização
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -83,7 +83,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/db_bookstore
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/db_bookstore
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: secret
     ports:

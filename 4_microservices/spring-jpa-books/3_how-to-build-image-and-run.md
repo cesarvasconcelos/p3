@@ -2,17 +2,17 @@
 
 Este guia mostra como:
 1. Construir uma imagem pronta para distribuição que contém apenas o JAR executável do Spring Boot.
-2. Executar a aplicação em um contêiner Docker usando um banco de dados externo (por exemplo, MySQL).
+2. Executar a aplicação em um contêiner Docker usando um banco de dados externo (por exemplo, MariaDB).
 3. Implantar a aplicação em uma arquitetura de microsserviços:
    - `bookstore-app`: o serviço principal da aplicação, que usa o banco de dados.
-   - `mysql`: o serviço de banco de dados.
+   - `mariadb`: o serviço de banco de dados.
 
 > ### Resumo: como containerizar manualmente a aplicação criando uma imagem Docker
 >
 > 1. `./mvnw clean package -DskipTests` — gera o JAR em `target/`
 > 2. `docker build -t bookstore-app:1.0 .` — cria a imagem Docker a partir do Dockerfile
-> 3. `docker compose -f compose-deploy.yaml up -d` — sobe a stack (aplicação + MySQL)
-> 4. `docker compose -f compose-deploy.yaml down -v` — derruba a stack e **remove os volumes** (os dados do MySQL são apagados)
+> 3. `docker compose -f compose-deploy.yaml up -d` — sobe a stack (aplicação + MariaDB)
+> 4. `docker compose -f compose-deploy.yaml down -v` — derruba a stack e **remove os volumes** (os dados do MariaDB são apagados)
 
 ## Empacotamento e Implantação com Docker
 
@@ -107,7 +107,11 @@ Quando usar `--progress=plain`:
 
 ### B. Executar a Stack Completa com Docker Compose
 
-O `compose-deploy.yaml` define dois serviços: `mysql` e `bookstore-app`. O serviço `bookstore-app` aguarda o `mysql` ficar saudável (*healthy*) antes de iniciar.
+> **Atenção (migração MySQL → MariaDB):** se você já subiu este projeto antes, quando ele usava MySQL, o volume
+> Docker `vol_books` ainda guarda os dados do MySQL e o MariaDB **não consegue iniciá-los**
+> (erro `InnoDB: File ./ib_logfile0 was not found`). Apague o volume uma única vez com `docker compose -f compose-deploy.yaml down -v`.
+
+O `compose-deploy.yaml` define dois serviços: `mariadb` e `bookstore-app`. O serviço `bookstore-app` aguarda o `mariadb` ficar saudável (*healthy*) antes de iniciar.
 
 ```bash
 # Navegue até o diretório do projeto
@@ -117,10 +121,10 @@ cd /Users/cesar/github/p3/4_microservices/spring-jpa-books
 #    (atenção: se o .env já existir, ele será sobrescrito)
 cp .env.example .env
 # Edite o .env com as senhas desejadas e, OBRIGATORIAMENTE, com o banco e a URL deste projeto:
-#   MYSQL_DATABASE=db_bookstore
-#   SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_bookstore
-# O .env.example é apenas um modelo genérico (usa MariaDB e outro banco);
-# sem esse ajuste, a aplicação não consegue se conectar ao MySQL.
+#   MARIADB_DATABASE=db_bookstore
+#   SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/db_bookstore
+# O .env.example é apenas um modelo genérico (usa outro banco);
+# sem esse ajuste, a aplicação não consegue se conectar ao MariaDB.
 
 # 2) Suba a stack completa (constrói a imagem bookstore-app se necessário;
 #    lembre-se de gerar o JAR antes: ./mvnw clean package -DskipTests)
@@ -130,24 +134,24 @@ docker compose -f compose-deploy.yaml up -d
 docker compose -f compose-deploy.yaml ps -a
 
 # 4) Conecte-se ao banco de dados
-docker exec -it db mysql -uroot -p
+docker exec -it db mariadb -uroot -p
 
 # 5) Execute uma consulta em um único comando, sem abrir o cliente interativo
-#    (-e executa o SQL e sai; -it é necessário para digitar a senha; o banco é o MYSQL_DATABASE do .env)
-docker exec -it db mysql -uroot -p db_bookstore -e "SELECT * FROM tbl_book;"
+#    (-e executa o SQL e sai; -it é necessário para digitar a senha; o banco é o MARIADB_DATABASE do .env)
+docker exec -it db mariadb -uroot -p db_bookstore -e "SELECT * FROM tbl_book;"
 # Alternativa passando a senha na linha de comando (evite fora de ambiente de estudo):
-# docker exec db mysql -uroot -p'SUA_SENHA' db_bookstore -e "SELECT * FROM tbl_book;"
+# docker exec db mariadb -uroot -p'SUA_SENHA' db_bookstore -e "SELECT * FROM tbl_book;"
 # Alternativa lendo a senha da variável já definida dentro do contêiner:
-# docker exec db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" -e "SELECT * FROM tbl_book;"'
+# docker exec db sh -c 'mariadb -uroot -p"$MARIADB_ROOT_PASSWORD" "$MARIADB_DATABASE" -e "SELECT * FROM tbl_book;"'
 
 # 6) Inspecione o contêiner do banco de dados
 docker inspect db
 ```
 
 Observações sobre o passo 5:
-- Sem `-it`, o prompt de senha do `-p` não funciona. A terceira forma (`sh -c`) dispensa o `-it`, pois não pede nem expõe a senha: ela usa `MYSQL_ROOT_PASSWORD` e `MYSQL_DATABASE`, já definidas dentro do contêiner.
-- Nas formas que passam a senha na linha de comando, o MySQL exibe o aviso `mysql: [Warning] Using a password on the command line interface can be insecure.`. Ele é esperado e não é um erro: a consulta é executada normalmente.
-- A tabela é `tbl_book` (criada pela migração Flyway `V1__create-database.sql`) e o banco `db_bookstore` vem do `MYSQL_DATABASE` do `.env`; ajuste se você alterou o `.env`.
+- Sem `-it`, o prompt de senha do `-p` não funciona. A terceira forma (`sh -c`) dispensa o `-it`, pois não pede nem expõe a senha: ela usa `MARIADB_ROOT_PASSWORD` e `MARIADB_DATABASE`, já definidas dentro do contêiner.
+- Nas formas que passam a senha na linha de comando, o MariaDB exibe o aviso `mariadb: [Warning] Using a password on the command line interface can be insecure.`. Ele é esperado e não é um erro: a consulta é executada normalmente.
+- A tabela é `tbl_book` (criada pela migração Flyway `V1__create-database.sql`) e o banco `db_bookstore` vem do `MARIADB_DATABASE` do `.env`; ajuste se você alterou o `.env`.
 
 Acesse a aplicação:
 ```bash

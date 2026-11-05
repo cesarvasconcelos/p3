@@ -4,7 +4,7 @@
 - Java 21
 - Maven (o projeto já inclui o Maven Wrapper `mvnw`/`mvnw.cmd`)
 - Docker e Docker Compose
-- MySQL (via Docker)
+- MariaDB (via Docker)
 
 ## Como executar a aplicação durante o desenvolvimento
 
@@ -92,8 +92,8 @@ Crie um novo projeto Spring Boot com a estrutura abaixo ou reutilize a existente
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -138,7 +138,7 @@ Crie um novo projeto Spring Boot com a estrutura abaixo ou reutilize a existente
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers-mysql</artifactId>
+            <artifactId>testcontainers-mariadb</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -166,17 +166,17 @@ Crie um arquivo `compose.yaml` no diretório raiz do projeto:
 
 ```yaml
 services:
-    mysql:
-        image: 'mysql:8.4'
+    mariadb:
+        image: 'mariadb:lts'
         container_name: db
         volumes:
             #  - ./init.sql:/docker-entrypoint-initdb.d/init.sql # leia more-about-db-initialization.txt
             - vol_bookstore:/var/lib/mysql
         environment:
-            - 'MYSQL_DATABASE=${MYSQL_DATABASE}'
-            - 'MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}'
-            - 'MYSQL_USER=${MYSQL_USER}'
-            - 'MYSQL_PASSWORD=${MYSQL_PASSWORD}'
+            - 'MARIADB_DATABASE=${MARIADB_DATABASE}'
+            - 'MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}'
+            - 'MARIADB_USER=${MARIADB_USER}'
+            - 'MARIADB_PASSWORD=${MARIADB_PASSWORD}'
         ports:
             - '3306:3306'
 volumes:
@@ -184,15 +184,15 @@ volumes:
         name: "vol_bookstore" # Set volume name
 ```
 
-> O projeto ainda mantém um `init.sql` na raiz (não utilizado pelo Compose, pois a linha correspondente está comentada). Ele existe apenas como referência histórica de uma inicialização "manual" via `/docker-entrypoint-initdb.d`, hoje substituída pelas migrações do Flyway descritas mais abaixo. Detalhes sobre como o MySQL processa esse tipo de script estão em `more-about-db-initialization.txt`, no mesmo diretório.
+> O projeto ainda mantém um `init.sql` na raiz (não utilizado pelo Compose, pois a linha correspondente está comentada). Ele existe apenas como referência histórica de uma inicialização "manual" via `/docker-entrypoint-initdb.d`, hoje substituída pelas migrações do Flyway descritas mais abaixo. Detalhes sobre como o MariaDB processa esse tipo de script estão em `more-about-db-initialization.txt`, no mesmo diretório.
 
 Crie um arquivo `.env` no diretório raiz:
 
 ```env
-MYSQL_ROOT_PASSWORD=secret
-MYSQL_USER=cesar
-MYSQL_PASSWORD=cesar
-MYSQL_DATABASE=db_bookstore
+MARIADB_ROOT_PASSWORD=secret
+MARIADB_USER=cesar
+MARIADB_PASSWORD=cesar
+MARIADB_DATABASE=db_bookstore
 ```
 
 ### 4. Application Properties
@@ -1371,7 +1371,7 @@ com.example.books.constraints.priceLimit=Price must not exceed a limit of ${limi
 
 ## Executando a Aplicação
 
-1. **Subir o Docker Compose (banco MySQL):**
+1. **Subir o Docker Compose (banco MariaDB):**
    ```bash
    docker compose -f compose.yaml up -d
    ```
@@ -1406,7 +1406,7 @@ com.example.books.constraints.priceLimit=Price must not exceed a limit of ${limi
 ## Principais Funcionalidades
 
 - **Segurança:** controle de acesso baseado em papéis (roles) com Spring Security
-- **Banco de dados:** MySQL com migrações via Flyway
+- **Banco de dados:** MariaDB com migrações via Flyway
 - **Validação:** anotações de validação padrão do Bean Validation e uma constraint personalizada (`@PriceLimit`)
 - **Interface:** UI responsiva estilizada com Bootstrap 5.3.8 e Bootstrap Icons
 - **Docker:** banco de dados containerizado via Docker Compose

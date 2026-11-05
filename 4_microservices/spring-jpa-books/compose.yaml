@@ -1,15 +1,15 @@
 services:
-    mysql:
-        image: 'mysql:8.4'
+    mariadb:
+        image: 'mariadb:lts'
         container_name: db
         volumes:
 #            - ./init.sql:/docker-entrypoint-initdb.d/init.sql # leia instructions.txt
             - vol_bookstore:/var/lib/mysql
         environment:
-            - 'MYSQL_DATABASE=${MYSQL_DATABASE}'
-            - 'MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}'
-            - 'MYSQL_USER=${MYSQL_USER}'
-            - 'MYSQL_PASSWORD=${MYSQL_PASSWORD}'
+            - 'MARIADB_DATABASE=${MARIADB_DATABASE}'
+            - 'MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}'
+            - 'MARIADB_USER=${MARIADB_USER}'
+            - 'MARIADB_PASSWORD=${MARIADB_PASSWORD}'
         ports:
             - '3306:3306'
 volumes:

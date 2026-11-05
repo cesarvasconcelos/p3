@@ -18,5 +18,5 @@ import com.example.books.repository.BookRepositoryUsingSpringTestContainersSuppo
     UserRoleAuthenticationDatabaseTests.class,
 })
 public class AllTestsSuite {}
- /* Acima, cada classe de teste usa um único container MySQL do Testcontainers compartilhado
+ /* Acima, cada classe de teste usa um único container MariaDB do Testcontainers compartilhado
  entre seus métodos @Test. Não é um container por @Test método; */
