@@ -17,6 +17,16 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<!-- Versão do Java do projeto: 21. O Spring Boot 4.x exige no mínimo Java 17.
+		     maven.compiler.release é a propriedade que realmente vale: o Maven passa a opção
+		     release 21 ao javac, que (1) gera bytecode Java 21 e (2) só permite usar classes e
+		     métodos que existem no Java 21 - mesmo que o Maven rode em um JDK mais novo (ex.: 25).
+		     Por isso o jar gerado também roda no JDK 21 usado pelos alunos.
+		     maven.compiler.source e maven.compiler.target são as propriedades antigas (Java 8):
+		     quando release está definida o compilador as ignora (confirmado com mvnw -X). Elas ficam
+		     aqui só por didática e por compatibilidade com ferramentas que ainda as leem.
+		     O spring-boot-starter-parent já define release = java.version, então apenas
+		     java.version bastaria. -->
 		<java.version>21</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
