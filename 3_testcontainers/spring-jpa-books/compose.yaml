@@ -12,9 +12,20 @@ services:
             - 'MARIADB_PASSWORD=${MARIADB_PASSWORD}'
         ports:
             - '3306:3306'
-        # Sem healthcheck, o Spring Boot considera o container pronto assim que ele inicia,
-        # mas na 1a execucao o MariaDB ainda esta inicializando (servidor temporario sem TCP).
+        # HEALTHCHECK: container iniciado != servico pronto.
+        # Sem healthcheck, o Docker considera o container pronto assim que o processo inicia, e o
+        # Spring Boot Docker Compose segue esse criterio: a aplicacao tenta conectar cedo demais.
+        # Na 1a execucao (volume vazio) a imagem oficial (MariaDB ou MySQL) sobe um servidor
+        # temporario so com socket Unix, sem TCP; ele cria o banco e os usuarios, desliga e so
+        # entao sobe o servidor definitivo. Nesse intervalo a conexao TCP e fechada pelo servidor.
+        # O healthcheck e como o Docker descobre quando o banco aceita conexoes; o Compose
+        # (depends_on com condition: service_healthy) e o Spring esperam por ele. Essa e a forma
+        # documentada e padrao de esperar um banco ficar pronto em qualquer compose.
         # --connect exige conexao TCP; --innodb_initialized espera o InnoDB ficar pronto.
+        #
+        # Equivalente para MySQL (o -h 127.0.0.1 forca TCP; sem ele o ping passa pelo socket e o
+        # servidor temporario responde, reproduzindo o mesmo problema):
+        #   test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-p$$MYSQL_ROOT_PASSWORD']
         healthcheck:
             test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
             interval: 2s       # de quanto em quanto tempo o Docker executa o teste
