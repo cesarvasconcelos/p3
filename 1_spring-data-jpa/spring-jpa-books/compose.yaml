@@ -14,6 +14,15 @@ services:
             - 'MARIADB_PASSWORD=${MARIADB_PASSWORD}'
         ports:
             - '3306:3306'
+        # Sem healthcheck, o Spring Boot considera o container pronto assim que ele inicia,
+        # mas na 1a execucao o MariaDB ainda esta inicializando (servidor temporario sem TCP).
+        # --connect exige conexao TCP; --innodb_initialized espera o InnoDB ficar pronto.
+        healthcheck:
+            test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+            interval: 2s       # de quanto em quanto tempo o Docker executa o teste
+            timeout: 5s        # tempo maximo de uma execucao do teste; passou disso, conta como falha
+            retries: 30        # falhas consecutivas toleradas antes de marcar como unhealthy (30 x 2s = ~60s)
+            start_period: 5s   # carencia inicial: falhas nesse periodo nao contam para o retries
 volumes:
     vol_bookstore:
         name: "vol_bookstore" # Set volume name
