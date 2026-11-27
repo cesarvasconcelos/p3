@@ -19,6 +19,10 @@
      <properties>
           <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
           <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+          <!-- Java 21 (o Spring Boot 3.x exige no mínimo 17). Mesmo em um JDK mais novo (ex.: 25),
+               maven.compiler.release faz o código ser compilado para o Java 21: sintaxe, bytecode
+               e biblioteca padrão. source e target são ignoradas quando release está definida.
+               O spring-boot-starter-parent já define release = java.version, que sozinha bastaria. -->
           <java.version>21</java.version>
           <maven.compiler.source>${java.version}</maven.compiler.source>
           <maven.compiler.target>${java.version}</maven.compiler.target>
