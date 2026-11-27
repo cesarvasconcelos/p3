@@ -38,6 +38,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  *     e nunca usado durante o teste falha com UnnecessaryStubbingException — um recurso
  *     que detecta stubs desnecessários e mantém os testes enxutos.
  */
+@DisplayName("Test class for BookService - pure unit tests with Mockito")
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
 
