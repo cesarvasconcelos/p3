@@ -148,3 +148,5 @@ docs/
 plan/
 # Application log folders (created by the Spring Boot apps in any module)
 logs/
+#java-conventions.md
+java-conventions.md
